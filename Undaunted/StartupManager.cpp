@@ -25,7 +25,7 @@ namespace Undaunted {
 
 	void LoadSettings()
 	{
-		LoadJson("Data/Undaunted/Settings.json");
+		LoadJson("Data/Mundusform/Settings.json");
 		RSJresource settings = currentfile; 
 
 		auto data = settings.as_array();
@@ -43,7 +43,7 @@ namespace Undaunted {
 	{
 		DataHandler* dataHandler = GetDataHandler();
 		_MESSAGE("Loading Rifts...");
-		std::string path = "Data/Undaunted/Rifts";
+		std::string path = "Data/Mundusform/Rifts";
 		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
 			auto filename = entry.path().u8string();
@@ -91,7 +91,7 @@ namespace Undaunted {
 	{
 		DataHandler* dataHandler = GetDataHandler();
 		_MESSAGE("Loading Blocks...");
-		std::string path = "Data/Undaunted/Blocks";
+		std::string path = "Data/Mundusform/Blocks";
 		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
 			auto filename = entry.path().u8string();

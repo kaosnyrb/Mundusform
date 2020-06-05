@@ -2,6 +2,9 @@
 #include <Undaunted\ConfigUtils.h>
 #include <Undaunted\SKSELink.h>
 #include <Undaunted\StartupManager.h>
+#include <Undaunted\LocationUtils.h>
+#include <Undaunted\StartupManager.h>
+#include <Undaunted\NavmeshTool.h>
 
 
 static PluginHandle					g_pluginHandle = kPluginHandle_Invalid;
@@ -62,6 +65,11 @@ extern "C"	{
 		if (msg->type == SKSEMessagingInterface::kMessage_PreLoadGame)
 		{
 			_MESSAGE("kMessage_PreLoadGame rechieved, clearing bounty data.");
+			Undaunted::InitNavmesh();
+			Undaunted::LoadSettings();
+			Undaunted::LoadRifts();
+			Undaunted::LoadBlocks();
+			Undaunted::BuildWorldList();
 			
 		}
 		//Register to recieve interface from Enchantment Framework
