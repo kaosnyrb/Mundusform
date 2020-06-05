@@ -123,43 +123,43 @@ namespace Undaunted {
 	bool RegisterFuncs(VMClassRegistry* registry) {
 
 		registry->RegisterFunction(
-			new NativeFunction1 <StaticFunctionTag, bool, UInt32>("InitSystem", "Undaunted_SystemScript", Undaunted::hook_InitSystem, registry));
+			new NativeFunction1 <StaticFunctionTag, bool, UInt32>("InitSystem", "Mundusform_SystemScript", Undaunted::hook_InitSystem, registry));
 
 		registry->RegisterFunction(
-			new NativeFunction0 <StaticFunctionTag, BSFixedString>("GetPlayerWorldSpaceName", "Undaunted_SystemScript", Undaunted::hook_GetPlayerWorldSpaceName, registry));
+			new NativeFunction0 <StaticFunctionTag, BSFixedString>("GetPlayerWorldSpaceName", "Mundusform_SystemScript", Undaunted::hook_GetPlayerWorldSpaceName, registry));
 
 		registry->RegisterFunction(
-			new NativeFunction1 <StaticFunctionTag, bool, BSFixedString>("isPlayerInWorldSpace", "Undaunted_SystemScript", Undaunted::hook_isPlayerInWorldSpace, registry));
+			new NativeFunction1 <StaticFunctionTag, bool, BSFixedString>("isPlayerInWorldSpace", "Mundusform_SystemScript", Undaunted::hook_isPlayerInWorldSpace, registry));
 
 		registry->RegisterFunction(
-			new NativeFunction2 <StaticFunctionTag, void, BSFixedString, BSFixedString>("SetConfigValue", "Undaunted_SystemScript", Undaunted::hook_SetConfigValue, registry));
+			new NativeFunction2 <StaticFunctionTag, void, BSFixedString, BSFixedString>("SetConfigValue", "Mundusform_SystemScript", Undaunted::hook_SetConfigValue, registry));
 		
 		registry->RegisterFunction(
-			new NativeFunction1 <StaticFunctionTag, UInt32, BSFixedString>("GetConfigValueInt", "Undaunted_SystemScript", Undaunted::hook_GetConfigValueInt, registry));
+			new NativeFunction1 <StaticFunctionTag, UInt32, BSFixedString>("GetConfigValueInt", "Mundusform_SystemScript", Undaunted::hook_GetConfigValueInt, registry));
 
 		registry->RegisterFunction(
-			new NativeFunction2 <StaticFunctionTag, UInt32, BSFixedString, UInt32>("GetModForm", "Undaunted_SystemScript", Undaunted::hook_GetModForm, registry));
-
-
-		registry->RegisterFunction(
-			new NativeFunction2 <StaticFunctionTag, VMResultArray<TESObjectREFR*>, UInt32, TESObjectREFR*>("SpawnRift", "Undaunted_SystemScript", Undaunted::hook_SpawnRift, registry));
+			new NativeFunction2 <StaticFunctionTag, UInt32, BSFixedString, UInt32>("GetModForm", "Mundusform_SystemScript", Undaunted::hook_GetModForm, registry));
 
 
 		registry->RegisterFunction(
-			new NativeFunction0 <StaticFunctionTag, VMResultArray<float>>("GetRiftRotations", "Undaunted_SystemScript", Undaunted::hook_GetRiftRotations, registry));
+			new NativeFunction2 <StaticFunctionTag, VMResultArray<TESObjectREFR*>, UInt32, TESObjectREFR*>("SpawnRift", "Mundusform_SystemScript", Undaunted::hook_SpawnRift, registry));
+
 
 		registry->RegisterFunction(
-			new NativeFunction0 <StaticFunctionTag, VMResultArray<TESObjectREFR*>>("GetRiftReferences", "Undaunted_SystemScript", Undaunted::hook_GetRiftReferences, registry));
+			new NativeFunction0 <StaticFunctionTag, VMResultArray<float>>("GetRiftRotations", "Mundusform_SystemScript", Undaunted::hook_GetRiftRotations, registry));
 
 		registry->RegisterFunction(
-			new NativeFunction0 <StaticFunctionTag, void>("CaptureArea", "Undaunted_SystemScript", Undaunted::hook_CaptureArea, registry));
+			new NativeFunction0 <StaticFunctionTag, VMResultArray<TESObjectREFR*>>("GetRiftReferences", "Mundusform_SystemScript", Undaunted::hook_GetRiftReferences, registry));
+
+		registry->RegisterFunction(
+			new NativeFunction0 <StaticFunctionTag, void>("CaptureArea", "Mundusform_SystemScript", Undaunted::hook_CaptureArea, registry));
 
 		//Navmesh
 		registry->RegisterFunction(
-			new NativeFunction0 <StaticFunctionTag, void>("CaptureNavTile", "Undaunted_SystemScript", Undaunted::hook_CaptureNavTile, registry));
+			new NativeFunction0 <StaticFunctionTag, void>("CaptureNavTile", "Mundusform_SystemScript", Undaunted::hook_CaptureNavTile, registry));
 
 		registry->RegisterFunction(
-			new NativeFunction0 <StaticFunctionTag, void>("ExportNavMesh", "Undaunted_SystemScript", Undaunted::hook_ExportNavMesh, registry));
+			new NativeFunction0 <StaticFunctionTag, void>("ExportNavMesh", "Mundusform_SystemScript", Undaunted::hook_ExportNavMesh, registry));
 
 
 		return true;
