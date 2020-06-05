@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="MyPlugin.cpp" />
+    <ClCompile Include="IntList.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="LocationUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SpawnUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldCellList.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="UnStringList.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="SKSELink.cpp" />
+    <ClCompile Include="StartupManager.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="RefList.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="FormRefList.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="RiftList.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+    <ClCompile Include="NavMeshTool.cpp">
+      <Filter>NavmeshUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockLibary.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MyPlugin.h" />
+    <ClInclude Include="IntList.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="LocationUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SpawnUtils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldCellList.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="UnStringList.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="SKSELink.h" />
+    <ClInclude Include="addrlib\offsets.h">
+      <Filter>addresslib</Filter>
+    </ClInclude>
+    <ClInclude Include="addrlib\relocation.h">
+      <Filter>addresslib</Filter>
+    </ClInclude>
+    <ClInclude Include="addrlib\skse_macros.h">
+      <Filter>addresslib</Filter>
+    </ClInclude>
+    <ClInclude Include="addrlib\versiondb.h">
+      <Filter>addresslib</Filter>
+    </ClInclude>
+    <ClInclude Include="eternal.hpp">
+      <Filter>addresslib</Filter>
+    </ClInclude>
+    <ClInclude Include="StartupManager.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="RefList.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="FormRefList.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="RiftList.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+    <ClInclude Include="NavmeshTool.h">
+      <Filter>NavmeshUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockLibary.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="exports.def" />
+    <None Include="RSJparser.tcc">
+      <Filter>Utils</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Collections">
+      <UniqueIdentifier>{bb75b88d-4984-4506-b683-8f7f7add69a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{a80de454-0a01-4768-89be-c774625d7248}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addresslib">
+      <UniqueIdentifier>{c5b3a7d2-ed50-4b84-af74-457a7bc5f9f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NavmeshUtil">
+      <UniqueIdentifier>{5a62b6ed-46f1-4521-a801-7675ed02854e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,4 @@
+LIBRARY	"Undaunted"
+EXPORTS
+SKSEPlugin_Query
+SKSEPlugin_Load
