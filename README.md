@@ -25,5 +25,5 @@ This should help rough out a navmesh that can be refined if necessary.
 Similar to games like diablo and warframe, defining tiles in a json format and procedural generating a complete dungeon with working navmesh.
 Built to support Undaunted rifts but built to be useful for quickly laying out dungeons for any author.
 
-Output will be a sseedit script so the output will be completely editable via standard tools.
+Output will be a sseedit script to add the cell to an esp so the output will be completely editable via standard tools.
 
