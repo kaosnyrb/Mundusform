@@ -40,7 +40,7 @@ namespace Undaunted {
 				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(Type) == 0)
 				{
 					foundenterance = true;
-					return Libary.data[BlockDeckPosition];
+					return Libary.data[BlockDeckPosition++];
 				}
 			}
 			ShuffleDeck();

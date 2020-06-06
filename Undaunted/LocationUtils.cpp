@@ -289,7 +289,7 @@ namespace Undaunted {
 				{
 					FormRef saveref = FormRef();
 					saveref.formId = ref->baseForm->formID;
-					saveref.pos = ref->pos - GetPlayer()->pos;
+					saveref.pos = ref->pos;// -GetPlayer()->pos;
 					saveref.rot = ref->rot;
 					saveref.scale = ref->unk90;
 					saveref.type = static_cast<FormType>(ref->baseForm->formType);
