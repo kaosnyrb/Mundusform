@@ -65,12 +65,11 @@ extern "C"	{
 		if (msg->type == SKSEMessagingInterface::kMessage_PreLoadGame)
 		{
 			_MESSAGE("kMessage_PreLoadGame rechieved, clearing bounty data.");
-			Undaunted::InitNavmesh();
 			Undaunted::LoadSettings();
+			Undaunted::InitNavmesh();
 			Undaunted::LoadRifts();
 			Undaunted::LoadBlocks();
-			Undaunted::BuildWorldList();
-			
+			Undaunted::BuildWorldList();			
 		}
 		//Register to recieve interface from Enchantment Framework
 		//if (msg->type == SKSEMessagingInterface::kMessage_PostLoad)

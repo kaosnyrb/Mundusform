@@ -117,7 +117,8 @@ namespace Undaunted {
 				int xpos = data[1][0].as<int>();
 				int ypos = data[1][1].as<int>();
 				int zpos = data[1][2].as<int>();
-				Tile enterancetile = Tile(xpos, ypos, zpos, 1);
+				int quadsize = data[1][3].as<int>();
+				Tile enterancetile = Tile(xpos, ypos, zpos, 1, quadsize);
 				enterancetile.exittype = exittype;
 				auto forms = data[2].as_array();
 				_MESSAGE("size: %i", forms.size());
@@ -152,8 +153,9 @@ namespace Undaunted {
 					int xpos = nav[j][0].as<int>();
 					int ypos = nav[j][1].as<int>();
 					int zpos = nav[j][2].as<int>();
+					int quadsize = nav[j][3].as<int>();
 					_MESSAGE("navtile: %i , %i , %i", xpos, ypos, zpos);
-					Tile tile = Tile(xpos, ypos, zpos, 1);
+					Tile tile = Tile(xpos, ypos, zpos, 1, quadsize);
 					navlist.AddItem(tile);
 				}
 				auto exits = data[4].as_array();
@@ -164,7 +166,8 @@ namespace Undaunted {
 					int xpos = exits[j][1].as<int>();
 					int ypos = exits[j][2].as<int>();
 					int zpos = exits[j][3].as<int>();
-					Tile tile = Tile(xpos, ypos, zpos, 1);
+					int quadsize = exits[j][3].as<int>();
+					Tile tile = Tile(xpos, ypos, zpos, 1, quadsize);
 					tile.exittype = exittype;
 					exitslist.AddItem(tile);
 				}

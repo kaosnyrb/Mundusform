@@ -63,8 +63,8 @@ namespace Undaunted
 	
 	void InitNavmesh()
 	{
-		//QuadSize = GetConfigValueInt("NavmeshToolResolution");
-		//corriderHeight = GetConfigValueInt("NavmeshCorriderHeight");
+		QuadSize = GetConfigValueInt("NavmeshToolResolution");
+		corriderHeight = GetConfigValueInt("NavmeshCorriderHeight");
 	}
 
 	void ExportNavmesh()
@@ -85,7 +85,8 @@ namespace Undaunted
 		
 		for (int i = 0; i < currentMap.map.length; i++)
 		{
-			Vert Vert1 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].z));
+			
+			Vert Vert1 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert1Index = -1;
 			Vert1Index = createdVerts.Find(Vert1);
 			if (Vert1Index == -1)
@@ -96,7 +97,7 @@ namespace Undaunted
 				createdVerts.AddItem(Vert1);
 			}
 
-			Vert Vert2 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].z));
+			Vert Vert2 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert2Index = -1;
 			Vert2Index = createdVerts.Find(Vert2);
 			if (Vert2Index == -1)
@@ -107,7 +108,7 @@ namespace Undaunted
 				createdVerts.AddItem(Vert2);
 			}
 
-			Vert Vert3 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].z));
+			Vert Vert3 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert3Index = -1;
 			Vert3Index = createdVerts.Find(Vert3);
 			if (Vert3Index == -1)
@@ -118,7 +119,7 @@ namespace Undaunted
 				createdVerts.AddItem(Vert3);
 			}
 
-			Vert Vert4 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].z));
+			Vert Vert4 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert4Index = -1;
 			Vert4Index = createdVerts.Find(Vert4);
 			if (Vert4Index == -1)
@@ -173,7 +174,7 @@ namespace Undaunted
 
 		for (int i = 0; i < currentMap.map.length; i++)
 		{
-			Vert Vert1 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].z));
+			Vert Vert1 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert1Index = -1;
 			Vert1Index = createdVerts.Find(Vert1);
 			if (Vert1Index == -1)
@@ -184,7 +185,7 @@ namespace Undaunted
 				createdVerts.AddItem(Vert1);
 			}
 
-			Vert Vert2 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].z));
+			Vert Vert2 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert2Index = -1;
 			Vert2Index = createdVerts.Find(Vert2);
 			if (Vert2Index == -1)
@@ -195,7 +196,7 @@ namespace Undaunted
 				createdVerts.AddItem(Vert2);
 			}
 
-			Vert Vert3 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].z));
+			Vert Vert3 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert3Index = -1;
 			Vert3Index = createdVerts.Find(Vert3);
 			if (Vert3Index == -1)
@@ -206,7 +207,7 @@ namespace Undaunted
 				createdVerts.AddItem(Vert3);
 			}
 
-			Vert Vert4 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].z));
+			Vert Vert4 = Vert(0, (currentMap.map.data[i].x * (currentMap.map.data[i].quadsize * 2)) - currentMap.map.data[i].quadsize, (currentMap.map.data[i].y * (currentMap.map.data[i].quadsize * 2)) + currentMap.map.data[i].quadsize, (currentMap.map.data[i].z));
 			UInt32 Vert4Index = -1;
 			Vert4Index = createdVerts.Find(Vert4);
 			if (Vert4Index == -1)
@@ -258,7 +259,37 @@ namespace Undaunted
 
 		if (currentMap.map.Find(mapx, mapy, z) == 0)
 		{
-			currentMap.map.AddItem(Tile(mapx, mapy, z, 1));
+			currentMap.map.AddItem(Tile(mapx, mapy, z, 1,QuadSize));
+
+			//WorldCell wc = WorldCell();
+			//wc.cell = Undaunted::GetPlayer()->parentCell;
+			//wc.world = Undaunted::GetPlayer()->currentWorldSpace;
+			//SpawnRefAtPosition(0x000B8A62, wc, NiPoint3(mapx, mapy, mapz));
+		}
+
+		_MESSAGE("currentMapPos %i, %i, %i", mapx, mapy, mapz);
+
+	}
+
+	void MarkTile(float x, float y, float z, int quadsize)
+	{
+		_MESSAGE("Quadsize: %i", quadsize);
+		_MESSAGE("MarkTile %f, %f, %f", x, y, z);
+		//(size / 2) * (QuadSize * 2))
+		//(QuadSize * 2)
+		x = x / (quadsize * 2);
+		y = y / (quadsize * 2);
+		z = z;
+		_MESSAGE("Pos %f, %f, %f", x, y, z);
+
+		int mapx = x;
+		int mapy = y;
+		int mapz = z;
+
+
+		if (currentMap.map.Find(mapx, mapy, z) == 0)
+		{
+			currentMap.map.AddItem(Tile(mapx, mapy, z, 1, quadsize));
 
 			//WorldCell wc = WorldCell();
 			//wc.cell = Undaunted::GetPlayer()->parentCell;

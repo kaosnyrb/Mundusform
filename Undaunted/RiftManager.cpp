@@ -67,7 +67,7 @@ namespace Undaunted {
 		_MESSAGE("Update the navmesh");
 		for (int i = 0; i < Enteranceblock.navlist.length; i++)
 		{
-			MarkTile(Enteranceblock.navlist.data[i].x, Enteranceblock.navlist.data[i].y, Enteranceblock.navlist.data[i].z);
+			MarkTile(Enteranceblock.navlist.data[i].x, Enteranceblock.navlist.data[i].y, Enteranceblock.navlist.data[i].z, Enteranceblock.navlist.data[i].quadsize);
 		}
 		for (int i = 0; i < Enteranceblock.exitslist.length; i++)
 		{
@@ -110,7 +110,7 @@ namespace Undaunted {
 			for (int i = 0; i < selectedblock.navlist.length; i++)
 			{
 
-				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z);
+				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
 			}			
 		}
 		

@@ -8,13 +8,15 @@ namespace Undaunted
 		int y;
 		int z;
 		int value;
+		int quadsize;
 		std::string exittype;
-		Tile(int _x, int _y, int _z, int _value)
+		Tile(int _x, int _y, int _z, int _value, int _quadsize)
 		{
 			x = _x;
 			y = _y;
 			z = _z;
 			value = _value;
+			quadsize = _quadsize;
 		}
 		Tile(){}
 	};
@@ -90,5 +92,6 @@ namespace Undaunted
 	void ExportNavmesh();
 	void ExportNavmeshChunk();
 	void MarkTile(float x, float y, float z);
+	void MarkTile(float x, float y, float z, int quadsize);
 #endif
 }
