@@ -4,6 +4,7 @@
 #include "FormRefList.h"
 #include <Undaunted\RiftList.h>
 #include <Undaunted\RefList.h>
+#include "NavmeshTool.h"
 
 namespace Undaunted {
 	WorldCellList worldCellList;
@@ -273,8 +274,9 @@ namespace Undaunted {
 		int numberofRefs = papyrusCell::GetNumRefs(parentCell, 0);
 		//Right so instead of faffing about creating a sse edit script that can read in files we'll just generate an sse script.
 		_MESSAGE("unit userscript;uses SkyrimUtils;uses mteFunctions;");
+		_MESSAGE("function NewArrayElement(rec: IInterface; path: String): IInterface; var a: IInterface; begin a := ElementByPath(rec, path); if Assigned(a) then begin Result := ElementAssign(a, HighInteger, nil, false); end else begin a := Add(rec, path, true);Result := ElementByIndex(a, 0);end;end;");
 		_MESSAGE("function Process(e: IInterface): integer;");
-		_MESSAGE("var cell: IInterface; ref: IInterface;");
+		_MESSAGE("var cell: IInterface; ref: IInterface; navm: IInterface; nvnm: IInterface; verts: IInterface;");
 		_MESSAGE("begin Result := 0; if not (Signature(e) = 'CELL') then begin Exit; end; cell := createRecord(GetFile(e), 'CELL');");
 		_MESSAGE("SetElementEditValues(cell, 'EDID', '%s');","Cell Name");
 		_MESSAGE("SetElementEditValues(cell, 'LTMP', '%s');", "0006AB01");//Lighting template
@@ -325,6 +327,9 @@ namespace Undaunted {
 				}
 			}
 		}
+
+		ExportNavmeshChunk();
+
 		_MESSAGE("end;function Finalize: integer;begin Result := 0;  FinalizeUtils();end;end.");
 		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\Undaunted.log");
 	}

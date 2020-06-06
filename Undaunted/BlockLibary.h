@@ -9,6 +9,7 @@ namespace Undaunted
 		FormRefList reflist;
 		TileList navlist;
 		TileList exitslist;
+		Tile enterancetile;
 	};
 
 	class BlockLibary {
@@ -16,6 +17,7 @@ namespace Undaunted
 		Block* data;
 		int length;
 		BlockLibary* AddItem(Block item);
+		BlockLibary* SwapItem(int first, int second);
 	};
 
 #endif

@@ -7,6 +7,8 @@
 #include <Undaunted\FormRefList.h>
 #include <Undaunted\LocationUtils.h>
 #include <Undaunted\NavmeshTool.h>
+#include <Undaunted\BlockLibary.h>
+#include <Undaunted\RiftManager.h>
 
 namespace Undaunted {
 	RSJresource currentfile;
@@ -35,6 +37,7 @@ namespace Undaunted {
 			auto inner = data[i].as_array();
 			std::string key = inner[0].as<std::string>("default string");
 			std::string value = inner[1].as<std::string>("default string");
+			_MESSAGE("setting: %s %s", key.c_str(), value.c_str());
 			AddConfigValue(key.c_str(), value.c_str());
 		}
 	}
@@ -92,6 +95,8 @@ namespace Undaunted {
 		DataHandler* dataHandler = GetDataHandler();
 		_MESSAGE("Loading Blocks...");
 		std::string path = "Data/Mundusform/Blocks";
+		BlockLibary lib = BlockLibary();
+
 		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
 			auto filename = entry.path().u8string();
@@ -102,9 +107,20 @@ namespace Undaunted {
 				RSJresource settings = currentfile;
 				auto data = settings.as_array();
 				_MESSAGE("size: %i", data.size());
-				auto forms = data[0].as_array();
-				_MESSAGE("size: %i", forms.size());
 				FormRefList reflist = FormRefList();
+				//Offsets
+				double xposoffset = data[0][0].as<double>();
+				double yposoffset = data[0][1].as<double>();
+				double zposoffset = data[0][2].as<double>();
+				//Enterance
+				std::string exittype = data[1][0].as<std::string>("exittype");
+				int xpos = data[1][0].as<int>();
+				int ypos = data[1][1].as<int>();
+				int zpos = data[1][2].as<int>();
+				Tile enterancetile = Tile(xpos, ypos, zpos, 1);
+				enterancetile.exittype = exittype;
+				auto forms = data[2].as_array();
+				_MESSAGE("size: %i", forms.size());
 				for (int j = 0; j < forms.size(); j++)
 				{
 					std::string esp = forms[j][0].as<std::string>("esp");
@@ -114,9 +130,9 @@ namespace Undaunted {
 					{
 						form = (modInfo->modIndex << 24) + form;
 					}
-					double xpos = forms[j][2].as<double>();
-					double ypos = forms[j][3].as<double>();
-					double zpos = forms[j][4].as<double>();
+					double xpos = forms[j][2].as<double>() - xposoffset;
+					double ypos = forms[j][3].as<double>() - yposoffset;
+					double zpos = forms[j][4].as<double>() - zposoffset;
 					double xrot = forms[j][5].as<double>();
 					double yrot = forms[j][6].as<double>();
 					double zrot = forms[j][7].as<double>();
@@ -127,29 +143,39 @@ namespace Undaunted {
 					ref.pos = NiPoint3(xpos, ypos, zpos);
 					ref.rot = NiPoint3(xrot, yrot, zrot);
 					ref.scale = scale;
+					reflist.AddItem(ref);
 				}
-				auto nav = data[1].as_array();
+				auto nav = data[3].as_array();
 				TileList navlist = TileList();
 				for (int j = 0; j < nav.size(); j++)
 				{
-					int xpos = forms[j][0].as<int>();
-					int ypos = forms[j][1].as<int>();
-					int zpos = forms[j][2].as<int>();
+					int xpos = nav[j][0].as<int>();
+					int ypos = nav[j][1].as<int>();
+					int zpos = nav[j][2].as<int>();
+					_MESSAGE("navtile: %i , %i , %i", xpos, ypos, zpos);
 					Tile tile = Tile(xpos, ypos, zpos, 1);
 					navlist.AddItem(tile);
 				}
-				auto exits = data[2].as_array();
+				auto exits = data[4].as_array();
 				TileList exitslist = TileList();
 				for (int j = 0; j < exits.size(); j++)
 				{
-					int xpos = forms[j][0].as<int>();
-					int ypos = forms[j][1].as<int>();
-					int zpos = forms[j][2].as<int>();
+					std::string exittype = exits[j][0].as<std::string>("exittype");
+					int xpos = exits[j][1].as<int>();
+					int ypos = exits[j][2].as<int>();
+					int zpos = exits[j][3].as<int>();
 					Tile tile = Tile(xpos, ypos, zpos, 1);
+					tile.exittype = exittype;
 					exitslist.AddItem(tile);
 				}
-
+				Block block = Block();
+				block.reflist = reflist;
+				block.navlist = navlist;
+				block.exitslist = exitslist;
+				block.enterancetile = enterancetile;
+				lib.AddItem(block);
 			}
 		}
+		SetBlockLibary(lib);
 	}
 }

@@ -16,4 +16,14 @@ namespace Undaunted
 		currentlist->length = newlist.length;
 		return currentlist;
 	}
+
+	BlockLibary* BlockLibary::SwapItem(int first, int second)
+	{
+		Block First = this->data[first];
+		Block Second = this->data[second];
+
+		this->data[first] = Second;
+		this->data[second] = First;
+		return this;
+	}
 }

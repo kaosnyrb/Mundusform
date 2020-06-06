@@ -63,7 +63,8 @@ namespace Undaunted
 	
 	void InitNavmesh()
 	{
-
+		//QuadSize = GetConfigValueInt("NavmeshToolResolution");
+		//corriderHeight = GetConfigValueInt("NavmeshCorriderHeight");
 	}
 
 	void ExportNavmesh()
@@ -159,13 +160,96 @@ namespace Undaunted
 		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\Undaunted.log");
 	}
 
+	//Appends the navmesh to the current file
+	void ExportNavmeshChunk()
+	{
+		_MESSAGE("navm := Add(cell,'NAVM',true);nvnm := Add(navm,'NVNM',true);seev(nvnm, 'Version', 12);seev(nvnm, 'Parent Cell', HexFormID(cell));seev(nvnm, 'NavMeshGrid', '00');");
+
+		int VertCount = 0;
+		int TriCount = 0;
+
+		VertList createdVerts = VertList();
+		TriangleList createdTriangles = TriangleList();
+
+		for (int i = 0; i < currentMap.map.length; i++)
+		{
+			Vert Vert1 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].z));
+			UInt32 Vert1Index = -1;
+			Vert1Index = createdVerts.Find(Vert1);
+			if (Vert1Index == -1)
+			{
+				Vert1.index = VertCount++;
+				AddVertex(Vert1);
+				Vert1Index = Vert1.index;
+				createdVerts.AddItem(Vert1);
+			}
+
+			Vert Vert2 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].z));
+			UInt32 Vert2Index = -1;
+			Vert2Index = createdVerts.Find(Vert2);
+			if (Vert2Index == -1)
+			{
+				Vert2.index = VertCount++;
+				AddVertex(Vert2);
+				Vert2Index = Vert2.index;
+				createdVerts.AddItem(Vert2);
+			}
+
+			Vert Vert3 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].z));
+			UInt32 Vert3Index = -1;
+			Vert3Index = createdVerts.Find(Vert3);
+			if (Vert3Index == -1)
+			{
+				Vert3.index = VertCount++;
+				AddVertex(Vert3);
+				Vert3Index = Vert3.index;
+				createdVerts.AddItem(Vert3);
+			}
+
+			Vert Vert4 = Vert(0, (currentMap.map.data[i].x * (QuadSize * 2)) - QuadSize, (currentMap.map.data[i].y * (QuadSize * 2)) + QuadSize, (currentMap.map.data[i].z));
+			UInt32 Vert4Index = -1;
+			Vert4Index = createdVerts.Find(Vert4);
+			if (Vert4Index == -1)
+			{
+				Vert4.index = VertCount++;
+				AddVertex(Vert4);
+				Vert4Index = Vert4.index;
+				createdVerts.AddItem(Vert4);
+			}
+
+			Triangle tri1 = Triangle(TriCount++, Vert1Index, Vert2Index, Vert3Index, -1, -1, -1);
+			createdTriangles.AddItem(tri1);
+
+			Triangle tri2 = Triangle(TriCount++, Vert1Index, Vert4Index, Vert3Index, -1, -1, -1);
+			createdTriangles.AddItem(tri2);
+
+		}
+
+		//Join the triangles
+		for (int i = 0; i < createdTriangles.length; i++)
+		{
+			createdTriangles.data[i].edge1 = createdTriangles.FindNeighbours(createdTriangles.data[i], 1, createdVerts);
+			createdTriangles.data[i].edge2 = createdTriangles.FindNeighbours(createdTriangles.data[i], 2, createdVerts);
+			createdTriangles.data[i].edge3 = createdTriangles.FindNeighbours(createdTriangles.data[i], 3, createdVerts);
+		}
+
+		//Save the triangles
+		for (int i = 0; i < createdTriangles.length; i++)
+		{
+			AddTriangle(createdTriangles.data[i]);
+		}
+	}
+
 	void MarkTile(float x, float y, float z)
 	{
+		_MESSAGE("Quadsize: %i", QuadSize);
+		_MESSAGE("MarkTile %f, %f, %f", x, y, z);
 		//(size / 2) * (QuadSize * 2))
 		//(QuadSize * 2)
 		x = x / (QuadSize * 2);
 		y = y / (QuadSize * 2);
 		z = z;
+		_MESSAGE("Pos %f, %f, %f", x, y, z);
 
 		int mapx = x; 
 		int mapy = y;
@@ -181,7 +265,7 @@ namespace Undaunted
 			//wc.world = Undaunted::GetPlayer()->currentWorldSpace;
 			//SpawnRefAtPosition(0x000B8A62, wc, NiPoint3(mapx, mapy, mapz));
 		}
-		_MESSAGE("PlayerPos %f, %f, %f", x,y,z);
+
 		_MESSAGE("currentMapPos %i, %i, %i", mapx, mapy, mapz);
 
 	}

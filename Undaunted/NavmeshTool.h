@@ -8,6 +8,7 @@ namespace Undaunted
 		int y;
 		int z;
 		int value;
+		std::string exittype;
 		Tile(int _x, int _y, int _z, int _value)
 		{
 			x = _x;
@@ -87,6 +88,7 @@ namespace Undaunted
 
 	void InitNavmesh();
 	void ExportNavmesh();
+	void ExportNavmeshChunk();
 	void MarkTile(float x, float y, float z);
 #endif
 }

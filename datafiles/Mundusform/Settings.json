@@ -1,3 +1,6 @@
 [
-    ["NumberOfBountiesPerChain","3", "How many bounties are spawned before a key is rewarded"]
+    ["NavmeshToolResolution","128", "The size of the quads, lower is more detailed."],
+    ["NavmeshCorriderHeight","256", "The distance at which to join vertices vertically"],
+    ["RiftGenerationMaxBlocks","50", "The max size of a dungeon."]
+    
 ]

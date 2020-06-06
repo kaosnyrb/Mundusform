@@ -40,6 +40,7 @@
     <ClCompile Include="BlockLibary.cpp">
       <Filter>Collections</Filter>
     </ClCompile>
+    <ClCompile Include="RiftManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyPlugin.h" />
@@ -95,6 +96,7 @@
     <ClInclude Include="BlockLibary.h">
       <Filter>Collections</Filter>
     </ClInclude>
+    <ClInclude Include="RiftManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />

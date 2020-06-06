@@ -7,8 +7,10 @@
 #include <Undaunted\LocationUtils.h>
 #include <Undaunted\ConfigUtils.h>
 #include <Undaunted\SpawnUtils.h>
+#include <Undaunted\RiftManager.h>
 
 namespace Undaunted {
+	VMClassRegistry* registrystore;
 
 	void hook_CaptureArea(StaticFunctionTag* base) {
 		//Create a SSE Edit script to recreate the current cell.
@@ -27,8 +29,8 @@ namespace Undaunted {
 			dataHandler->modList.loadedMods.GetNthItem(i, mod);
 			_MESSAGE("Listing Mods: %s ", mod->name);
 		}
-		InitNavmesh();
 		LoadSettings();
+		InitNavmesh();
 		LoadRifts();
 		LoadBlocks();
 		BuildWorldList();
@@ -82,24 +84,31 @@ namespace Undaunted {
 	}
 
 
-	VMResultArray<TESObjectREFR*> hook_SpawnRift(StaticFunctionTag* base, UInt32 BountyId, TESObjectREFR* Startpoint)
+	VMResultArray<TESObjectREFR*> hook_SpawnRift(StaticFunctionTag* base, TESObjectREFR* Startpoint)
 	{
 		_MESSAGE("hook_SpawnRift");
-		return VMResultArray<TESObjectREFR*>();
+		BuildRift(registrystore, Startpoint, GetPlayer()->parentCell, GetPlayer()->currentWorldSpace);
+		RefList results = GetRiftManagerRefs();
+		VMResultArray<TESObjectREFR*> resultsarray = VMResultArray<TESObjectREFR*>();
+		for (int i = 0; i < results.length; i++)
+		{
+			resultsarray.push_back(results.data[i].objectRef);
+		}
+		return resultsarray;
 	}
 
 	VMResultArray<float> hook_GetRiftRotations(StaticFunctionTag* base)
 	{
 		_MESSAGE("hook_GetRiftRotations");
 		VMResultArray<float> resultsarray = VMResultArray<float>();
-		return GetRiftRotations();
+		return GetRiftManagerRotations();
 	}
 
 	
 	VMResultArray<TESObjectREFR*> hook_GetRiftReferences(StaticFunctionTag* base)
 	{
 		_MESSAGE("hook_GetRiftReferences");
-		RefList results = GetCurrentRiftRefs();
+		RefList results = GetRiftManagerRefs();
 		VMResultArray<TESObjectREFR*> resultsarray = VMResultArray<TESObjectREFR*>();
 		for (int i = 0; i < results.length; i++)
 		{
@@ -121,7 +130,7 @@ namespace Undaunted {
 	}
 
 	bool RegisterFuncs(VMClassRegistry* registry) {
-
+		registrystore = registry;
 		registry->RegisterFunction(
 			new NativeFunction1 <StaticFunctionTag, bool, UInt32>("InitSystem", "Mundusform_SystemScript", Undaunted::hook_InitSystem, registry));
 
@@ -142,7 +151,7 @@ namespace Undaunted {
 
 
 		registry->RegisterFunction(
-			new NativeFunction2 <StaticFunctionTag, VMResultArray<TESObjectREFR*>, UInt32, TESObjectREFR*>("SpawnRift", "Mundusform_SystemScript", Undaunted::hook_SpawnRift, registry));
+			new NativeFunction1 <StaticFunctionTag, VMResultArray<TESObjectREFR*>, TESObjectREFR*>("SpawnRift", "Mundusform_SystemScript", Undaunted::hook_SpawnRift, registry));
 
 
 		registry->RegisterFunction(
