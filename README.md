@@ -1,4 +1,7 @@
-# Mundusform
+<p align="center">
+  <img src="./docs/logo.png" alt="Size Limit CLI" width="720">
+</p>
+
 Skyrim SE tool for worldbuilding
 
 The navmeshing/Dungeon tools seemed too useful to lump in with Undaunted so they've been split out here.
