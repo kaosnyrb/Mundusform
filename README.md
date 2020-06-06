@@ -30,3 +30,7 @@ Built to support Undaunted rifts but built to be useful for quickly laying out d
 
 Output will be a sseedit script to add the cell to an esp so the output will be completely editable via standard tools.
 
+# cell snapshot tool
+
+I suck at building rooms. Skyrim is full of pre built rooms.
+The cell snapshot tool will record the current cell information for use as blocks.
