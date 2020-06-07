@@ -104,6 +104,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BlockLibary.cpp" />
+    <ClCompile Include="BoundingBoxs.cpp" />
     <ClCompile Include="ConfigUtils.cpp" />
     <ClCompile Include="FormRefList.cpp" />
     <ClCompile Include="IntList.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="addrlib\skse_macros.h" />
     <ClInclude Include="addrlib\versiondb.h" />
     <ClInclude Include="BlockLibary.h" />
+    <ClInclude Include="BoundingBoxs.h" />
     <ClInclude Include="ConfigUtils.h" />
     <ClInclude Include="eternal.hpp" />
     <ClInclude Include="FormRefList.h" />

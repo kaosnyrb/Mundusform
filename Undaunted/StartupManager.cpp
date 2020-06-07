@@ -112,15 +112,23 @@ namespace Undaunted {
 				double xposoffset = data[0][0].as<double>();
 				double yposoffset = data[0][1].as<double>();
 				double zposoffset = data[0][2].as<double>();
+
+				//Boundingbox
+				double bounding_xpos = data[1][0].as<double>();
+				double bounding_ypos = data[1][1].as<double>();
+				double bounding_width = data[1][2].as<double>();
+				double bounding_height = data[1][2].as<double>();
+
+
 				//Enterance
-				std::string exittype = data[1][0].as<std::string>("exittype");
-				int xpos = data[1][0].as<int>();
-				int ypos = data[1][1].as<int>();
-				int zpos = data[1][2].as<int>();
-				int quadsize = data[1][3].as<int>();
+				std::string exittype = data[2][0].as<std::string>("exittype");
+				int xpos = data[2][0].as<int>();
+				int ypos = data[2][1].as<int>();
+				int zpos = data[2][2].as<int>();
+				int quadsize = data[2][3].as<int>();
 				Tile enterancetile = Tile(xpos, ypos, zpos, 1, quadsize);
 				enterancetile.exittype = exittype;
-				auto forms = data[2].as_array();
+				auto forms = data[3].as_array();
 				_MESSAGE("size: %i", forms.size());
 				for (int j = 0; j < forms.size(); j++)
 				{
@@ -146,7 +154,7 @@ namespace Undaunted {
 					ref.scale = scale;
 					reflist.AddItem(ref);
 				}
-				auto nav = data[3].as_array();
+				auto nav = data[4].as_array();
 				TileList navlist = TileList();
 				for (int j = 0; j < nav.size(); j++)
 				{
@@ -158,7 +166,7 @@ namespace Undaunted {
 					Tile tile = Tile(xpos, ypos, zpos, 1, quadsize);
 					navlist.AddItem(tile);
 				}
-				auto exits = data[4].as_array();
+				auto exits = data[5].as_array();
 				TileList exitslist = TileList();
 				for (int j = 0; j < exits.size(); j++)
 				{
@@ -176,6 +184,7 @@ namespace Undaunted {
 				block.navlist = navlist;
 				block.exitslist = exitslist;
 				block.enterancetile = enterancetile;
+				block.boundingbox = BoundingBox(Vector2(bounding_xpos, bounding_ypos), bounding_width, bounding_height);
 				lib.AddItem(block);
 			}
 		}

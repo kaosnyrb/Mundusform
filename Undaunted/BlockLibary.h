@@ -1,5 +1,6 @@
 #include <Undaunted\FormRefList.h>
 #include <Undaunted\NavmeshTool.h>
+#include <Undaunted\BoundingBoxs.h>
 namespace Undaunted
 {
 #ifndef BlockLibarydef
@@ -10,6 +11,7 @@ namespace Undaunted
 		TileList navlist;
 		TileList exitslist;
 		Tile enterancetile;
+		BoundingBox boundingbox;
 	};
 
 	class BlockLibary {

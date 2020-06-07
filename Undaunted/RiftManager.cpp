@@ -1,7 +1,7 @@
 #include "RiftManager.h"
 #include <queue> 
 #include <Undaunted\ConfigUtils.h>
-
+#include "BoundingBoxs.h"
 
 namespace Undaunted {
 	BlockLibary Libary;
@@ -20,7 +20,6 @@ namespace Undaunted {
 
 	void ShuffleDeck()
 	{
-		srand(time(NULL));
 		for (int i = 0; i < Libary.length + 10; i++)
 		{
 			Libary.SwapItem(rand() % Libary.length, rand() % Libary.length);
@@ -29,7 +28,7 @@ namespace Undaunted {
 	}
 
 	
-	Block FindBlockWithEnterance(const char* Type)
+	Block FindBlockWithJoin(const char* Type)
 	{
 		bool foundenterance = false;
 		while (!foundenterance)
@@ -39,17 +38,114 @@ namespace Undaunted {
 				_MESSAGE("Comparing %s and %s", Libary.data[BlockDeckPosition].enterancetile.exittype.c_str(), Type);
 				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(Type) == 0)
 				{
-					foundenterance = true;
-					return Libary.data[BlockDeckPosition++];
+					if (Libary.data[BlockDeckPosition].exitslist.length > 0)
+					{
+						foundenterance = true;
+						return Libary.data[BlockDeckPosition++];
+					}
 				}
 			}
 			ShuffleDeck();
 		}
 	}
 
+	Block FindDeadend(const char* Type)
+	{
+		bool foundenterance = false;
+		while (!foundenterance)
+		{
+			for (; BlockDeckPosition < Libary.length; BlockDeckPosition++)
+			{
+				_MESSAGE("Comparing %s and %s", Libary.data[BlockDeckPosition].enterancetile.exittype.c_str(), Type);
+				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(Type) == 0)
+				{
+					if (Libary.data[BlockDeckPosition].exitslist.length == 0)
+					{
+						foundenterance = true;
+						return Libary.data[BlockDeckPosition++];
+					}
+				}
+			}
+			ShuffleDeck();
+		}
+	}
+
+	/*
+	BoundingBox GetBoundingFromBlock(Block block)
+	{
+		if (block.navlist.length == 0)
+		{
+			BoundingBox box = BoundingBox();
+			box.position = Vector2(0, 0);
+			box.width = 0;
+			box.height = 0;
+			return box;
+		}
+		int minx = 20000;
+		int miny = 20000;
+
+		int maxx = -20000;
+		int maxy = -20000;
+
+		for (int i = 0; i < block.navlist.length; i++)
+		{
+			if (block.navlist.data[i].x > maxx)
+			{
+				maxx = block.navlist.data[i].x;
+			}
+			if (block.navlist.data[i].x < minx)
+			{
+				minx = block.navlist.data[i].x;
+			}
+			if (block.navlist.data[i].y > maxy)
+			{
+				maxy = block.navlist.data[i].y;
+			}
+			if (block.navlist.data[i].y < miny)
+			{
+				miny = block.navlist.data[i].y;
+			}
+		}
+		BoundingBox box = BoundingBox();
+		//We want the nav meshes to be touching but not the bounding boxes.
+		box.position = Vector2(minx + 1, miny + 1);
+		box.width = (maxx - minx) - 1;
+		box.height = (maxy - miny) - 1;
+		return box;
+
+	}*/
+
+	std::queue<Tile> RemoveOrAddExitFromQueue(std::queue<Tile> que, Tile exit)
+	{
+		std::queue <Tile> exits;
+		bool foundexit = false;
+
+		while (que.size() > 0)
+		{
+			Tile oldexit = que.front();
+			que.pop();
+			if (oldexit.x == exit.x &&
+				oldexit.y == exit.y &&
+				oldexit.z == exit.z)
+			{
+				//This exit already existed, this means we should join these up.
+				foundexit = true;
+			}
+			else
+			{
+				exits.push(oldexit);
+			}
+		}
+		if (!foundexit)
+		{
+			exits.push(exit);
+		}
+		return exits;
+	}
+
 	VMResultArray<float> RiftManagerRotations;
 	RefList riftmanobjectrefs = RefList();
-
+	BoundingBoxList boundingboxes = BoundingBoxList();
 
 	void BuildRift(VMClassRegistry* registry, TESObjectREFR* Target, TESObjectCELL* cell, TESWorldSpace* worldspace)
 	{
@@ -58,12 +154,13 @@ namespace Undaunted {
 		NiPoint3 startingpoint = Target->pos;// +NiPoint3(rand() % 1000, rand() % 1000, rand() % 1000);
 		std::queue <Tile> exits;
 		FormRefList formlist = FormRefList();
-
 		_MESSAGE("Place the enterance.");
 		bool foundenterance = false;
-		Block Enteranceblock = FindBlockWithEnterance("Entrance");
+		Block Enteranceblock = FindBlockWithJoin("Entrance");
 
 		formlist.AddItem(Enteranceblock.reflist.data[0]);
+		boundingboxes.AddItem(Enteranceblock.boundingbox);
+
 		_MESSAGE("Update the navmesh");
 		for (int i = 0; i < Enteranceblock.navlist.length; i++)
 		{
@@ -87,7 +184,30 @@ namespace Undaunted {
 
 			_MESSAGE("Select a block that enterance matches the exit");
 
-			Block selectedblock = FindBlockWithEnterance(exit.exittype.c_str());
+			Block selectedblock = FindBlockWithJoin(exit.exittype.c_str());
+			BoundingBox box = selectedblock.boundingbox;
+			box.position.x += exit.x;
+			box.position.y += exit.y;		
+			int attempts = 0;
+
+			while (boundingboxes.Intersects(box) && attempts < 5)
+			{
+				//The selected tile doesn't fit. Find another.
+				selectedblock = FindBlockWithJoin(exit.exittype.c_str());
+				box = selectedblock.boundingbox;
+				box.position.x += exit.x;
+				box.position.y += exit.y;
+				attempts++;
+			}
+			if (attempts == 5)
+			{
+				selectedblock = FindDeadend(exit.exittype.c_str());
+				box = selectedblock.boundingbox;
+				box.position.x += exit.x;
+				box.position.y += exit.y;				
+			}
+			boundingboxes.AddItem(box);
+
 			_MESSAGE("Place the block");
 			for (int i = 0; i < selectedblock.reflist.length; i++)
 			{
@@ -103,17 +223,39 @@ namespace Undaunted {
 				newexit.x += exit.x;
 				newexit.y += exit.y;
 				newexit.z += exit.z;
+				//If the exit exists remove it from the que
 				exits.push(newexit);
 			}
 			placedtiles++;
 			_MESSAGE("Update the navmesh");
 			for (int i = 0; i < selectedblock.navlist.length; i++)
 			{
-
 				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
 			}			
 		}
-		
+
+		//Close the remaining exits
+		while (exits.size() > 0)
+		{
+			Tile exit = exits.front();
+			exits.pop();
+			Block selectedblock = FindDeadend(exit.exittype.c_str());
+			_MESSAGE("Place the block");
+			for (int i = 0; i < selectedblock.reflist.length; i++)
+			{
+				FormRef ref = selectedblock.reflist.data[i];
+				ref.pos.x += exit.x;
+				ref.pos.y += exit.y;
+				ref.pos.z += exit.z;
+				formlist.AddItem(ref);
+			}
+			placedtiles++;
+			_MESSAGE("Update the navmesh");
+			for (int i = 0; i < selectedblock.navlist.length; i++)
+			{
+				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
+			}
+		}
 
 		RiftManagerRotations = VMResultArray<float>();
 		for (int i = 0; i < formlist.length; i++)

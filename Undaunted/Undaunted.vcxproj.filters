@@ -41,6 +41,9 @@
       <Filter>Collections</Filter>
     </ClCompile>
     <ClCompile Include="RiftManager.cpp" />
+    <ClCompile Include="BoundingBoxs.cpp">
+      <Filter>Collections</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyPlugin.h" />
@@ -97,6 +100,9 @@
       <Filter>Collections</Filter>
     </ClInclude>
     <ClInclude Include="RiftManager.h" />
+    <ClInclude Include="BoundingBoxs.h">
+      <Filter>Collections</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />

@@ -91,6 +91,7 @@ namespace Undaunted
 	void InitNavmesh();
 	void ExportNavmesh();
 	void ExportNavmeshChunk();
+	TileList GetTilelist();
 	void MarkTile(float x, float y, float z);
 	void MarkTile(float x, float y, float z, int quadsize);
 #endif

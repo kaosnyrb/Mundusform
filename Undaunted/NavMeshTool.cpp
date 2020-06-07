@@ -241,6 +241,11 @@ namespace Undaunted
 		}
 	}
 
+	TileList GetTilelist()
+	{
+		return currentMap.map;
+	}
+
 	void MarkTile(float x, float y, float z)
 	{
 		_MESSAGE("Quadsize: %i", QuadSize);
