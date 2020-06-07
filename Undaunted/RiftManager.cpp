@@ -70,51 +70,6 @@ namespace Undaunted {
 		}
 	}
 
-	/*
-	BoundingBox GetBoundingFromBlock(Block block)
-	{
-		if (block.navlist.length == 0)
-		{
-			BoundingBox box = BoundingBox();
-			box.position = Vector2(0, 0);
-			box.width = 0;
-			box.height = 0;
-			return box;
-		}
-		int minx = 20000;
-		int miny = 20000;
-
-		int maxx = -20000;
-		int maxy = -20000;
-
-		for (int i = 0; i < block.navlist.length; i++)
-		{
-			if (block.navlist.data[i].x > maxx)
-			{
-				maxx = block.navlist.data[i].x;
-			}
-			if (block.navlist.data[i].x < minx)
-			{
-				minx = block.navlist.data[i].x;
-			}
-			if (block.navlist.data[i].y > maxy)
-			{
-				maxy = block.navlist.data[i].y;
-			}
-			if (block.navlist.data[i].y < miny)
-			{
-				miny = block.navlist.data[i].y;
-			}
-		}
-		BoundingBox box = BoundingBox();
-		//We want the nav meshes to be touching but not the bounding boxes.
-		box.position = Vector2(minx + 1, miny + 1);
-		box.width = (maxx - minx) - 1;
-		box.height = (maxy - miny) - 1;
-		return box;
-
-	}*/
-
 	std::queue<Tile> RemoveOrAddExitFromQueue(std::queue<Tile> que, Tile exit)
 	{
 		std::queue <Tile> exits;
