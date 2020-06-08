@@ -79,5 +79,13 @@ namespace Undaunted
 			boundingbox.height = boundingbox.width;
 			boundingbox.width = temp;
 		}
+		for (int i = 0; i < navlist.length; i++)
+		{
+			NiPoint3 exitpos = NiPoint3(navlist.data[i].x, navlist.data[i].y, navlist.data[i].z);
+			exitpos = Rotate(pivot, exitpos, -angle);
+			navlist.data[i].x = exitpos.x;
+			navlist.data[i].y = exitpos.y;
+			navlist.data[i].z = exitpos.z;
+		}
 	}
 }
