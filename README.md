@@ -20,9 +20,6 @@ Once applied the navmeshes are standard nav meshes, with no dependency on mundus
 This should help rough out a navmesh that can be refined if necessary.
 
 
-
-# Wip
-
 # block based dungeon generation 
 
 Similar to games like diablo and warframe, defining tiles in a json format and procedural generating a complete dungeon with working navmesh.
@@ -32,5 +29,7 @@ Output will be a sseedit script to add the cell to an esp so the output will be 
 
 # cell snapshot tool
 
-I suck at building rooms. Skyrim is full of pre built rooms.
-The cell snapshot tool will record the current cell information for use as blocks.
+Creating blocks by hand is time consuming, so instead the cell snapshot tool can capture all the references in the current cell.
+
+With a few simple rules new blocks can be created rapidly.
+The snapshot tool also works with the player navmesh tool, allowing quick layout of block navmeshes.
