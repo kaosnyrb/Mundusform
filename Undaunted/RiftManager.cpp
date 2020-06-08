@@ -25,6 +25,7 @@ namespace Undaunted {
 			Libary.SwapItem(rand() % Libary.length, rand() % Libary.length);
 		}
 		BlockDeckPosition = 0;
+		_MESSAGE("Shuffle BlockLib");
 	}
 
 	
@@ -166,7 +167,6 @@ namespace Undaunted {
 		int maxtiles = GetConfigValueInt("RiftGenerationMaxBlocks");
 		int placedtiles = 0;
 		//While there are still exits and we haven't reached the cap
-
 		while (exits.size() > 0 && placedtiles < maxtiles - exits.size())
 		{
 			Tile exit = exits.front();
@@ -175,32 +175,29 @@ namespace Undaunted {
 
 			_MESSAGE("Select a block that enterance matches the exit");
 
-			Block selectedblock = FindBlockWithJoin(exit.exittype.c_str());
-			BoundingBox box = selectedblock.boundingbox;
-			box.position.x += exit.x;
-			box.position.y += exit.y;		
-			int attempts = 0;
-			_MESSAGE("Rotate the block");
-			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
-
-			while (boundingboxes.Intersects(box) || boundingboxes.Intersects(BoundingBox(Vector2(selectedblock.exitslist.data[0].x + exit.x, selectedblock.exitslist.data[0].y + exit.y),256,256)))
+			Block selectedblock;
+			bool validbox = false;
+			BoundingBox box;
+			while (!validbox)
 			{
-				//The selected tile doesn't fit. Find another.
+				validbox = true;
 				selectedblock = FindBlockWithJoin(exit.exittype.c_str());
 				box = selectedblock.boundingbox;
 				box.position.x += exit.x;
 				box.position.y += exit.y;
 				selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
-				attempts++;
+				validbox = !boundingboxes.Intersects(box);
+				_MESSAGE("block validbox: %i", validbox);
+				if (validbox)
+				{
+					for (int i = 0; i < selectedblock.exitslist.length && validbox; i++)
+					{
+						validbox = !boundingboxes.Intersects(BoundingBox(Vector2(selectedblock.exitslist.data[i].x + exit.x - 128, selectedblock.exitslist.data[i].y + exit.y - 128), 256, 256));
+						_MESSAGE("exitslist validbox: %i", validbox);
+
+					}
+				}
 			}
-			/*
-			if (attempts == 5)
-			{
-				selectedblock = FindDeadend(exit.exittype.c_str());
-				box = selectedblock.boundingbox;
-				box.position.x += exit.x;
-				box.position.y += exit.y;				
-			}*/
 			boundingboxes.AddItem(box);
 
 			_MESSAGE("Place the block");
@@ -220,18 +217,15 @@ namespace Undaunted {
 				newexit.y += exit.y;
 				newexit.z += exit.z;
 				newexit.bearing += exit.bearing;
-				//If the exit exists remove it from the que
 				newexits.AddItem(newexit);
 			}
-
 			//Choose a main path
-			int exitnumber = 0;
-			
-			//if (newexits.length > 1)
-			//{
-		//		exitnumber = rand() % (newexits.length - 1);
-		//		_MESSAGE("exitnumber: %i", exitnumber);
-			//}
+			int exitnumber = 0; //This code doesn't work yet. Basically I wanted to select a random exit but it leads to the chance of having an exit which can nver be furfilled.
+			if (newexits.length > 1)
+			{
+				exitnumber = 0;//rand() % (newexits.length - 1);
+				_MESSAGE("exitnumber: %i", exitnumber);
+			}
 			exits.push(newexits.data[exitnumber]);
 			//Add the remainders to the side paths
 			for (int i = 0; i < newexits.length; i++)
@@ -241,7 +235,6 @@ namespace Undaunted {
 					sideexits.push(newexits.data[i]);
 				}
 			}
-
 			placedtiles++;
 			_MESSAGE("Update the navmesh");
 			for (int i = 0; i < selectedblock.navlist.length; i++)
