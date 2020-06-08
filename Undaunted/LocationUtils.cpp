@@ -372,13 +372,23 @@ namespace Undaunted {
 						|| saveref.type == kFormType_NAVI)
 						&& saveref.formId < 4278190000)
 					{
-						_MESSAGE("[\"Skyrim.esm\", %i, %f, %f, %f, %f, %f, %f, %i]", saveref.formId, 
+						_MESSAGE("[\"Skyrim.esm\", %i, %f, %f, %f, %f, %f, %f, %i],", saveref.formId, 
 							saveref.pos.x, saveref.pos.y, saveref.pos.z, 
 							saveref.rot.x * (180.0 / 3.141592653589793238463), saveref.rot.y * (180.0 / 3.141592653589793238463), saveref.rot.z * (180.0 / 3.141592653589793238463),
 							saveref.scale);
 					}
 				}
 			}
+		}
+		_MESSAGE("CapturingNavmesh");
+		TileList tiles = GetTilelist();
+		for (int i = 0; i < tiles.length; i++)
+		{
+			_MESSAGE("[%i,%i,%i,%i],",
+				(tiles.data[i].x * (tiles.data[i].quadsize * 2)),
+				(tiles.data[i].y * (tiles.data[i].quadsize * 2)), 
+				tiles.data[i].z
+				, tiles.data[i].quadsize);
 		}
 	}
 
