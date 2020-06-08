@@ -8,6 +8,7 @@ namespace Undaunted
 		int y;
 		int z;
 		int value;
+		int bearing;
 		int quadsize;
 		std::string exittype;
 		Tile(int _x, int _y, int _z, int _value, int _quadsize)

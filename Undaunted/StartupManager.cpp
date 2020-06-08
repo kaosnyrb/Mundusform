@@ -174,9 +174,11 @@ namespace Undaunted {
 					int xpos = exits[j][1].as<int>();
 					int ypos = exits[j][2].as<int>();
 					int zpos = exits[j][3].as<int>();
-					int quadsize = exits[j][3].as<int>();
+					int quadsize = exits[j][4].as<int>();
+					int bearing = exits[j][5].as<int>();
 					Tile tile = Tile(xpos, ypos, zpos, 1, quadsize);
 					tile.exittype = exittype;
+					tile.bearing = bearing;
 					exitslist.AddItem(tile);
 				}
 				Block block = Block();

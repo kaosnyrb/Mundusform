@@ -41,7 +41,24 @@ namespace Undaunted {
 					if (Libary.data[BlockDeckPosition].exitslist.length > 0)
 					{
 						foundenterance = true;
-						return Libary.data[BlockDeckPosition++];
+						Block rblock = Block();
+						rblock.boundingbox = Libary.data[BlockDeckPosition].boundingbox;
+						rblock.enterancetile = Libary.data[BlockDeckPosition].enterancetile;
+						// Dereference
+						for (int i = 0; i < Libary.data[BlockDeckPosition].exitslist.length; i++)
+						{
+							rblock.exitslist.AddItem(Libary.data[BlockDeckPosition].exitslist.data[i]);
+						}
+						for (int i = 0; i < Libary.data[BlockDeckPosition].navlist.length; i++)
+						{
+							rblock.navlist.AddItem(Libary.data[BlockDeckPosition].navlist.data[i]);
+						}
+						for (int i = 0; i < Libary.data[BlockDeckPosition].reflist.length; i++)
+						{
+							rblock.reflist.AddItem(Libary.data[BlockDeckPosition].reflist.data[i]);
+						}
+						BlockDeckPosition++;
+						return rblock;
 					}
 				}
 			}
@@ -62,7 +79,24 @@ namespace Undaunted {
 					if (Libary.data[BlockDeckPosition].exitslist.length == 0)
 					{
 						foundenterance = true;
-						return Libary.data[BlockDeckPosition++];
+						Block rblock = Block();
+						rblock.boundingbox = Libary.data[BlockDeckPosition].boundingbox;
+						rblock.enterancetile = Libary.data[BlockDeckPosition].enterancetile;
+						// Dereference
+						for (int i = 0; i < Libary.data[BlockDeckPosition].exitslist.length; i++)
+						{
+							rblock.exitslist.AddItem(Libary.data[BlockDeckPosition].exitslist.data[i]);
+						}
+						for (int i = 0; i < Libary.data[BlockDeckPosition].navlist.length; i++)
+						{
+							rblock.navlist.AddItem(Libary.data[BlockDeckPosition].navlist.data[i]);
+						}
+						for (int i = 0; i < Libary.data[BlockDeckPosition].reflist.length; i++)
+						{
+							rblock.reflist.AddItem(Libary.data[BlockDeckPosition].reflist.data[i]);
+						}
+						BlockDeckPosition++;
+						return rblock;
 					}
 				}
 			}
@@ -112,7 +146,7 @@ namespace Undaunted {
 		_MESSAGE("Place the enterance.");
 		bool foundenterance = false;
 		Block Enteranceblock = FindBlockWithJoin("Entrance");
-
+		
 		formlist.AddItem(Enteranceblock.reflist.data[0]);
 		boundingboxes.AddItem(Enteranceblock.boundingbox);
 
@@ -144,6 +178,8 @@ namespace Undaunted {
 			box.position.x += exit.x;
 			box.position.y += exit.y;		
 			int attempts = 0;
+			_MESSAGE("Rotate the block");
+			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 
 			while (boundingboxes.Intersects(box) && attempts < 5)
 			{
@@ -152,6 +188,7 @@ namespace Undaunted {
 				box = selectedblock.boundingbox;
 				box.position.x += exit.x;
 				box.position.y += exit.y;
+				selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 				attempts++;
 			}
 			if (attempts == 5)
@@ -178,6 +215,7 @@ namespace Undaunted {
 				newexit.x += exit.x;
 				newexit.y += exit.y;
 				newexit.z += exit.z;
+				newexit.bearing += exit.bearing;
 				//If the exit exists remove it from the que
 				exits.push(newexit);
 			}
@@ -195,6 +233,7 @@ namespace Undaunted {
 			Tile exit = exits.front();
 			exits.pop();
 			Block selectedblock = FindDeadend(exit.exittype.c_str());
+			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 			_MESSAGE("Place the block");
 			for (int i = 0; i < selectedblock.reflist.length; i++)
 			{

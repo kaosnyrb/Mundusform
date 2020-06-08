@@ -13,6 +13,7 @@ namespace Undaunted
 	WorldCell GetWorldCellFromRef(TESObjectREFR* object);
 
 	void CaptureArea();
+	void CaptureAreaJson();
 	void AddRift(FormRefList reflist);
 	FormRefList GetRandomRift();
 

@@ -12,6 +12,7 @@ namespace Undaunted
 		TileList exitslist;
 		Tile enterancetile;
 		BoundingBox boundingbox;
+		void RotateAroundPivot(Vector3 pivot, float angle);
 	};
 
 	class BlockLibary {

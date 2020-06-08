@@ -334,6 +334,54 @@ namespace Undaunted {
 		gLog.OpenRelative(CSIDL_MYDOCUMENTS, "\\My Games\\Skyrim Special Edition\\SKSE\\Undaunted.log");
 	}
 
+	void CaptureAreaJson()
+	{
+		FormRefList list = FormRefList();
+		TESObjectCELL* parentCell = GetPlayer()->parentCell;
+		int numberofRefs = papyrusCell::GetNumRefs(parentCell, 0);
+		for (int i = 0; i < numberofRefs; i++)
+		{
+			TESObjectREFR* ref = papyrusCell::GetNthRef(parentCell, i, 0);
+			if (ref != NULL)
+			{
+				if (ref->formID != NULL)
+				{
+					FormRef saveref = FormRef();
+					saveref.formId = ref->baseForm->formID;
+					saveref.pos = ref->pos;// -GetPlayer()->pos;
+					saveref.rot = ref->rot;
+					saveref.scale = ref->unk90;
+					saveref.type = static_cast<FormType>(ref->baseForm->formType);
+					if ((saveref.type == kFormType_Static
+						//|| saveref.type == kFormType_LeveledCharacter
+						|| saveref.type == kFormType_Activator
+						|| saveref.type == kFormType_Sound
+						|| saveref.type == kFormType_Light
+						|| saveref.type == kFormType_Container
+						|| saveref.type == kFormType_MovableStatic
+						|| saveref.type == kFormType_Furniture
+						|| saveref.type == kFormType_Reference
+						|| saveref.type == kFormType_LeveledItem
+						//|| saveref.type == kFormType_NPC
+						|| saveref.type == kFormType_Hazard
+						|| saveref.type == kFormType_Door
+						|| saveref.type == kFormType_Flora
+						|| saveref.type == kFormType_Tree
+						|| saveref.type == kFormType_Grass
+						|| saveref.type == kFormType_NAVM
+						|| saveref.type == kFormType_NAVI)
+						&& saveref.formId < 4278190000)
+					{
+						_MESSAGE("[\"Skyrim.esm\", %i, %f, %f, %f, %f, %f, %f, %i]", saveref.formId, 
+							saveref.pos.x, saveref.pos.y, saveref.pos.z, 
+							saveref.rot.x * (180.0 / 3.141592653589793238463), saveref.rot.y * (180.0 / 3.141592653589793238463), saveref.rot.z * (180.0 / 3.141592653589793238463),
+							saveref.scale);
+					}
+				}
+			}
+		}
+	}
+
 	//Raw Rifts
 
 	RiftList riftList = RiftList();

@@ -126,7 +126,8 @@ namespace Undaunted {
 	void hook_ExportNavMesh(StaticFunctionTag* base)
 	{
 		_MESSAGE("hook_ExportNavMesh");
-		ExportNavmesh();
+		CaptureAreaJson();
+		//ExportNavmesh();
 	}
 
 	bool RegisterFuncs(VMClassRegistry* registry) {
