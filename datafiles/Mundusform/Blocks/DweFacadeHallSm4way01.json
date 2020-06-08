@@ -1,7 +1,7 @@
 [
     [0,0,0],
-    [-256,256,512,512],
-    ["DweFacadeHallSm1way01_N",0,0,0,128],
+    [-256,256,256,256],
+    ["DweFacadeHallSm1way01",0,0,0,128],
     [
         ["Skyrim.esm",348442,0,0,0,0,0,0,100]
     ],
@@ -17,8 +17,8 @@
         [-256,0,0,128]
     ],
     [
-        ["DweFacadeHallSm1way01_N",0,512,0,128],
-        ["DweFacadeHallSm1way01_E",512,0,0,128],
-        ["DweFacadeHallSm1way01_W",-512,0,0,128]
+        ["DweFacadeHallSm1way01",0,512,0,128,0],
+        ["DweFacadeHallSm1way01",512,0,0,128,90],
+        ["DweFacadeHallSm1way01",-512,0,0,128,-90]
     ]
 ]

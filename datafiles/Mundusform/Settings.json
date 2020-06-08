@@ -1,6 +1,6 @@
 [
     ["NavmeshToolResolution","32", "The size of the quads, lower is more detailed."],
     ["NavmeshCorriderHeight","512", "The distance at which to join vertices vertically"],
-    ["RiftGenerationMaxBlocks","1000", "The max size of a dungeon."]
+    ["RiftGenerationMaxBlocks","120", "The max size of a dungeon."]
     
 ]

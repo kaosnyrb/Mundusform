@@ -142,6 +142,8 @@ namespace Undaunted {
 		srand(time(NULL));
 		NiPoint3 startingpoint = Target->pos;// +NiPoint3(rand() % 1000, rand() % 1000, rand() % 1000);
 		std::queue <Tile> exits;
+		std::queue <Tile> sideexits;
+
 		FormRefList formlist = FormRefList();
 		_MESSAGE("Place the enterance.");
 		bool foundenterance = false;
@@ -181,7 +183,7 @@ namespace Undaunted {
 			_MESSAGE("Rotate the block");
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 
-			while (boundingboxes.Intersects(box) && attempts < 5)
+			while (boundingboxes.Intersects(box) || boundingboxes.Intersects(BoundingBox(Vector2(selectedblock.exitslist.data[0].x + exit.x, selectedblock.exitslist.data[0].y + exit.y),256,256)))
 			{
 				//The selected tile doesn't fit. Find another.
 				selectedblock = FindBlockWithJoin(exit.exittype.c_str());
@@ -191,13 +193,14 @@ namespace Undaunted {
 				selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 				attempts++;
 			}
+			/*
 			if (attempts == 5)
 			{
 				selectedblock = FindDeadend(exit.exittype.c_str());
 				box = selectedblock.boundingbox;
 				box.position.x += exit.x;
 				box.position.y += exit.y;				
-			}
+			}*/
 			boundingboxes.AddItem(box);
 
 			_MESSAGE("Place the block");
@@ -209,6 +212,7 @@ namespace Undaunted {
 				ref.pos.z += exit.z;
 				formlist.AddItem(ref);
 			}
+			TileList newexits = TileList();
 			for (int i = 0; i < selectedblock.exitslist.length; i++)
 			{
 				Tile newexit = selectedblock.exitslist.data[i];
@@ -217,8 +221,27 @@ namespace Undaunted {
 				newexit.z += exit.z;
 				newexit.bearing += exit.bearing;
 				//If the exit exists remove it from the que
-				exits.push(newexit);
+				newexits.AddItem(newexit);
 			}
+
+			//Choose a main path
+			int exitnumber = 0;
+			
+			//if (newexits.length > 1)
+			//{
+		//		exitnumber = rand() % (newexits.length - 1);
+		//		_MESSAGE("exitnumber: %i", exitnumber);
+			//}
+			exits.push(newexits.data[exitnumber]);
+			//Add the remainders to the side paths
+			for (int i = 0; i < newexits.length; i++)
+			{
+				if (i != exitnumber)
+				{
+					sideexits.push(newexits.data[i]);
+				}
+			}
+
 			placedtiles++;
 			_MESSAGE("Update the navmesh");
 			for (int i = 0; i < selectedblock.navlist.length; i++)
@@ -226,12 +249,14 @@ namespace Undaunted {
 				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
 			}			
 		}
+		//Place the final room
+
 
 		//Close the remaining exits
-		while (exits.size() > 0)
+		while (sideexits.size() > 0)
 		{
-			Tile exit = exits.front();
-			exits.pop();
+			Tile exit = sideexits.front();
+			sideexits.pop();
 			Block selectedblock = FindDeadend(exit.exittype.c_str());
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 			_MESSAGE("Place the block");
