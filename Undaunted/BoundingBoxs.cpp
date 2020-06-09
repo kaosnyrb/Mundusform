@@ -1,4 +1,5 @@
 #include "BoundingBoxs.h"
+#include <Undaunted\ConfigUtils.h>
 
 namespace Undaunted {
 	BoundingBoxList* BoundingBoxList::AddItem(BoundingBox item)
@@ -21,6 +22,8 @@ namespace Undaunted {
 	{
 		BoundingBoxList* currentlist = this;
 		if (item.height == 0 && item.width == 0) return false;
+		int boundboxesEnabled = GetConfigValueInt("BoundingBoxCheck");
+		if (boundboxesEnabled == 0) return false;
 
 		bool intersects = false;
 		for (int i = 0; i < currentlist->length; i++)

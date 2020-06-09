@@ -1,0 +1,10 @@
+Block Guidelines
+
+1. Place the hall of the type you are joining at 0,0,0,0,0,0
+2. Build on a grid of the size of your navmesh
+3. Try to only rotate objects on the Z axis. X and Y are unrealiable.
+
+
+
+
+3. edit the navmesh and save it, then optimise

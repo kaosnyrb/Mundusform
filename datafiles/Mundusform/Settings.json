@@ -1,6 +1,7 @@
 [
-    ["NavmeshToolResolution","128", "The size of the quads, lower is more detailed."],
+    ["NavmeshToolResolution","128", "The size of the quads captured by the tool, lower is more detailed."],
+    ["BaseNavmeshResolution","64", "The size of the quads stored"],
     ["NavmeshCorriderHeight","512", "The distance at which to join vertices vertically"],
-    ["RiftGenerationMaxBlocks","20", "The max size of a dungeon."]
-    
+    ["RiftGenerationMaxBlocks","40", "The max size of a dungeon."],
+    ["BoundingBoxCheck","1", "Use bounding boxes to prevent overlaps. Useful to turn off while debugging."]
 ]

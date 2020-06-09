@@ -150,7 +150,11 @@ namespace Undaunted {
 		bool foundenterance = false;
 		Block Enteranceblock = FindBlockWithJoin("Entrance");
 		
-		formlist.AddItem(Enteranceblock.reflist.data[0]);
+		for (int i = 0; i < Enteranceblock.reflist.length; i++)
+		{
+			FormRef ref = Enteranceblock.reflist.data[i];
+			formlist.AddItem(ref);
+		}
 		boundingboxes.AddItem(Enteranceblock.boundingbox);
 
 		_MESSAGE("Update the navmesh");
@@ -178,8 +182,10 @@ namespace Undaunted {
 			Block selectedblock;
 			bool validbox = false;
 			BoundingBox box;
+			int Breaker = 0;
 			while (!validbox)
 			{
+				Breaker++;
 				validbox = true;
 				selectedblock = FindBlockWithJoin(exit.exittype.c_str());
 				box = selectedblock.boundingbox;
@@ -197,7 +203,13 @@ namespace Undaunted {
 
 					}
 				}
+				if (Breaker > 1000)
+				{
+					_MESSAGE("Breaker Activated.");
+					return;
+				}
 			}
+
 			boundingboxes.AddItem(box);
 
 			_MESSAGE("Place the block");
