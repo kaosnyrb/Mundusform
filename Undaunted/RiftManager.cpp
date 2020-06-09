@@ -68,7 +68,7 @@ namespace Undaunted {
 		}
 	}
 
-	Block FindDeadend(const char* Type)
+	Block FindDeadend(const char* Type, const char* blocktype)
 	{
 		bool foundenterance = false;
 		while (!foundenterance)
@@ -76,7 +76,8 @@ namespace Undaunted {
 			for (; BlockDeckPosition < Libary.length; BlockDeckPosition++)
 			{
 				_MESSAGE("Comparing %s and %s", Libary.data[BlockDeckPosition].enterancetile.exittype.c_str(), Type);
-				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(Type) == 0)
+				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(Type) == 0 &&
+					Libary.data[BlockDeckPosition].type.compare(blocktype) == 0)
 				{
 					if (Libary.data[BlockDeckPosition].exitslist.length == 0)
 					{
@@ -142,7 +143,7 @@ namespace Undaunted {
 	{
 		//Debug
 		srand(time(NULL));
-		NiPoint3 startingpoint = Target->pos;// +NiPoint3(rand() % 1000, rand() % 1000, rand() % 1000);
+		NiPoint3 startingpoint = Target->pos;
 		std::queue <Tile> exits;
 		std::queue <Tile> sideexits;
 
@@ -276,14 +277,33 @@ namespace Undaunted {
 			}			
 		}
 		//Place the final room
-
-
+		_MESSAGE("Place the final room");
+		
+		Tile exit = exits.front();
+		exits.pop();
+		Block Exitblock = FindDeadend(exit.exittype.c_str(), "exit");
+		Exitblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
+		for (int i = 0; i < Exitblock.reflist.length; i++)
+		{
+			FormRef ref = Exitblock.reflist.data[i];
+			ref.pos.x += exit.x;
+			ref.pos.y += exit.y;
+			ref.pos.z += exit.z;
+			formlist.AddItem(ref);
+		}
+		boundingboxes.AddItem(Exitblock.boundingbox);
+		
+		for (int i = 0; i < Exitblock.navlist.length; i++)
+		{
+			MarkTile(Exitblock.navlist.data[i].x + exit.x, Exitblock.navlist.data[i].y + exit.y, Exitblock.navlist.data[i].z + exit.z, Exitblock.navlist.data[i].quadsize);
+		}
+		
 		//Close the remaining exits
 		while (sideexits.size() > 0)
 		{
 			Tile exit = sideexits.front();
 			sideexits.pop();
-			Block selectedblock = FindDeadend(exit.exittype.c_str());
+			Block selectedblock = FindDeadend(exit.exittype.c_str(),"end");
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 			_MESSAGE("Place the block");
 			for (int i = 0; i < selectedblock.reflist.length; i++)
