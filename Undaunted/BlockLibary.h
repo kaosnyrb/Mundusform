@@ -12,6 +12,7 @@ namespace Undaunted
 		TileList exitslist;
 		Tile enterancetile;
 		BoundingBox boundingbox;
+		std::string type;
 		void RotateAroundPivot(Vector3 pivot, float angle);
 	};
 

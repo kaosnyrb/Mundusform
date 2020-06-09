@@ -109,9 +109,10 @@ namespace Undaunted {
 				_MESSAGE("size: %i", data.size());
 				FormRefList reflist = FormRefList();
 				//Offsets
-				double xposoffset = data[0][0].as<double>();
-				double yposoffset = data[0][1].as<double>();
-				double zposoffset = data[0][2].as<double>();
+				std::string type = data[0][0].as<std::string>("type");
+				double xposoffset = data[0][1].as<double>();
+				double yposoffset = data[0][2].as<double>();
+				double zposoffset = data[0][3].as<double>();
 
 				//Boundingbox
 				double bounding_xpos = data[1][0].as<double>();
@@ -182,6 +183,7 @@ namespace Undaunted {
 					exitslist.AddItem(tile);
 				}
 				Block block = Block();
+				block.type = type;
 				block.reflist = reflist;
 				block.navlist = navlist;
 				block.exitslist = exitslist;

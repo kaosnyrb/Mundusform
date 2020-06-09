@@ -29,15 +29,16 @@ namespace Undaunted {
 	}
 
 	
-	Block FindBlockWithJoin(const char* Type)
+	Block FindBlockWithJoin(const char* ConectorType, const char* blocktype)
 	{
 		bool foundenterance = false;
 		while (!foundenterance)
 		{
 			for (; BlockDeckPosition < Libary.length; BlockDeckPosition++)
 			{
-				_MESSAGE("Comparing %s and %s", Libary.data[BlockDeckPosition].enterancetile.exittype.c_str(), Type);
-				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(Type) == 0)
+				_MESSAGE("Comparing %s and %s", Libary.data[BlockDeckPosition].enterancetile.exittype.c_str(), ConectorType);
+				if (Libary.data[BlockDeckPosition].enterancetile.exittype.compare(ConectorType) == 0 &&
+					Libary.data[BlockDeckPosition].type.compare(blocktype) == 0 )
 				{
 					if (Libary.data[BlockDeckPosition].exitslist.length > 0)
 					{
@@ -148,7 +149,7 @@ namespace Undaunted {
 		FormRefList formlist = FormRefList();
 		_MESSAGE("Place the enterance.");
 		bool foundenterance = false;
-		Block Enteranceblock = FindBlockWithJoin("Entrance");
+		Block Enteranceblock = FindBlockWithJoin("Entrance","Entrance");
 		
 		for (int i = 0; i < Enteranceblock.reflist.length; i++)
 		{
@@ -168,10 +169,13 @@ namespace Undaunted {
 		}
 
 		_MESSAGE("While we have exits open");
-		int maxtiles = GetConfigValueInt("RiftGenerationMaxBlocks");
-		int placedtiles = 0;
+		int roomcount = GetConfigValueInt("RiftGenerationRooms");
+		int hallcount = GetConfigValueInt("RiftGenerationHallLength");
+
+		int placedRooms = 0;
+		int currentHallCount = hallcount;
 		//While there are still exits and we haven't reached the cap
-		while (exits.size() > 0 && placedtiles < maxtiles - exits.size())
+		while (exits.size() > 0 && placedRooms < roomcount)
 		{
 			Tile exit = exits.front();
 			exits.pop();
@@ -183,11 +187,21 @@ namespace Undaunted {
 			bool validbox = false;
 			BoundingBox box;
 			int Breaker = 0;
+
+			bool isHall = false;
 			while (!validbox)
 			{
 				Breaker++;
 				validbox = true;
-				selectedblock = FindBlockWithJoin(exit.exittype.c_str());
+				if (currentHallCount > 0)
+				{
+					selectedblock = FindBlockWithJoin(exit.exittype.c_str(), "hall");
+					isHall = true;
+				}
+				else
+				{
+					selectedblock = FindBlockWithJoin(exit.exittype.c_str(), "room");
+				}
 				box = selectedblock.boundingbox;
 				box.position.x += exit.x;
 				box.position.y += exit.y;
@@ -209,7 +223,15 @@ namespace Undaunted {
 					return;
 				}
 			}
-
+			if (isHall)
+			{
+				currentHallCount--;
+			}
+			else
+			{
+				placedRooms++;
+				currentHallCount = hallcount;
+			}
 			boundingboxes.AddItem(box);
 
 			_MESSAGE("Place the block");
@@ -247,7 +269,6 @@ namespace Undaunted {
 					sideexits.push(newexits.data[i]);
 				}
 			}
-			placedtiles++;
 			_MESSAGE("Update the navmesh");
 			for (int i = 0; i < selectedblock.navlist.length; i++)
 			{
@@ -273,7 +294,7 @@ namespace Undaunted {
 				ref.pos.z += exit.z;
 				formlist.AddItem(ref);
 			}
-			placedtiles++;
+			placedRooms++;
 			_MESSAGE("Update the navmesh");
 			for (int i = 0; i < selectedblock.navlist.length; i++)
 			{
