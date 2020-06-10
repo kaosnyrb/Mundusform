@@ -310,24 +310,33 @@ namespace Undaunted {
 		//Close the remaining exits
 		while (sideexits.size() > 0)
 		{
+			bool validbox = false;
 			Tile exit = sideexits.front();
-			sideexits.pop();
 			Block selectedblock = FindDeadend(exit.exittype.c_str(),"end");
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
-			_MESSAGE("Place the block");
-			for (int i = 0; i < selectedblock.reflist.length; i++)
+			BoundingBox box;
+			box = selectedblock.boundingbox;
+			box.position.x += exit.x;
+			box.position.y += exit.y;
+			validbox = !boundingboxes.Intersects(box);
+			if (validbox)
 			{
-				FormRef ref = selectedblock.reflist.data[i];
-				ref.pos.x += exit.x;
-				ref.pos.y += exit.y;
-				ref.pos.z += exit.z;
-				formlist.AddItem(ref);
-			}
-			placedRooms++;
-			_MESSAGE("Update the navmesh");
-			for (int i = 0; i < selectedblock.navlist.length; i++)
-			{
-				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
+				sideexits.pop();
+				_MESSAGE("Place the block");
+				for (int i = 0; i < selectedblock.reflist.length; i++)
+				{
+					FormRef ref = selectedblock.reflist.data[i];
+					ref.pos.x += exit.x;
+					ref.pos.y += exit.y;
+					ref.pos.z += exit.z;
+					formlist.AddItem(ref);
+				}
+				_MESSAGE("Update the navmesh");
+				for (int i = 0; i < selectedblock.navlist.length; i++)
+				{
+					MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
+				}
+				boundingboxes.AddItem(box);
 			}
 		}
 
