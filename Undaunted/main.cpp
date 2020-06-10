@@ -67,7 +67,6 @@ extern "C"	{
 			_MESSAGE("kMessage_PreLoadGame rechieved, clearing bounty data.");
 			Undaunted::LoadSettings();
 			Undaunted::InitNavmesh();
-			Undaunted::LoadRifts();
 			Undaunted::LoadBlocks();
 			Undaunted::BuildWorldList();			
 		}

@@ -2,7 +2,9 @@
     ["NavmeshToolResolution","128", "The size of the quads captured by the tool, lower is more detailed."],
     ["BaseNavmeshResolution","64", "The size of the quads stored"],
     ["NavmeshCorriderHeight","512", "The distance at which to join vertices vertically"],
-    ["RiftGenerationRooms","5", "The number of rooms in a dungeon."],
-    ["RiftGenerationHallLength","10", "The length of the hall between rooms."],
-    ["BoundingBoxCheck","0", "Use bounding boxes to prevent overlaps. Useful to turn off while debugging."]
+    ["RiftGenerationRooms","3", "The number of rooms in a dungeon."],
+    ["RiftGenerationHallLength","5", "The length of the hall between rooms."],
+    ["RiftGenerationRoomAttempts","100", "Number of times we try and place a room in the slot before trying another hall."],
+    ["RiftGenerationBreaker","1000", "Number of times we try and place a block before giving up entirely. Prevents infinite loops."],    
+    ["BoundingBoxCheck","1", "Use bounding boxes to prevent overlaps. Useful to turn off while debugging."]
 ]

@@ -173,6 +173,9 @@ namespace Undaunted {
 		int roomcount = GetConfigValueInt("RiftGenerationRooms");
 		int hallcount = GetConfigValueInt("RiftGenerationHallLength");
 
+		int roomBreaker = GetConfigValueInt("RiftGenerationRoomAttempts");
+		int finalBreaker = GetConfigValueInt("RiftGenerationBreaker");
+
 		int placedRooms = 0;
 		int currentHallCount = hallcount;
 		//While there are still exits and we haven't reached the cap
@@ -218,9 +221,15 @@ namespace Undaunted {
 
 					}
 				}
-				if (Breaker > 1000)
+				if (Breaker > roomBreaker)
 				{
-					_MESSAGE("Breaker Activated.");
+					_MESSAGE("Breaker 1 Activated. Trying to place hall.");
+					//Can't place a room? Try a hall.
+					currentHallCount = 1;
+				}
+				if (Breaker > finalBreaker)
+				{
+					_MESSAGE("Breaker 2 Activated. Stopping generation.");
 					return;
 				}
 			}
@@ -258,7 +267,7 @@ namespace Undaunted {
 			int exitnumber = 0; //This code doesn't work yet. Basically I wanted to select a random exit but it leads to the chance of having an exit which can nver be furfilled.
 			if (newexits.length > 1)
 			{
-				exitnumber = 0;//rand() % (newexits.length - 1);
+				exitnumber = rand() % (newexits.length - 1); //0
 				_MESSAGE("exitnumber: %i", exitnumber);
 			}
 			exits.push(newexits.data[exitnumber]);
@@ -333,16 +342,14 @@ namespace Undaunted {
 			}
 			NiPoint3 position = startingpoint + formlist.data[i].pos;
 			NiPoint3 rotation = formlist.data[i].rot;
-			rotation.x = rotation.x;// *(180.0 / 3.141592653589793238463);
-			rotation.y = rotation.y;// *(180.0 / 3.141592653589793238463);
-			rotation.z = rotation.z;// *(180.0 / 3.141592653589793238463);
+			rotation.x = rotation.x;
+			rotation.y = rotation.y;
+			rotation.z = rotation.z;
 
 			TESObjectREFR* spawned = PlaceAtMe(registry, 1, Target, spawnForm, 1, true, false);
 			spawned->unk90 = formlist.data[i].scale;
 			spawned->pos = position;
 			spawned->rot = rotation;
-			//			MoveRefToWorldCell(spawned, cell, worldspace, position, rotation);
-
 
 			_MESSAGE("Spawn details: %f, %f, %f, %f, %f, %f", position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
 			Ref newref = Ref();

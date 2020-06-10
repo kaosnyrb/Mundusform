@@ -69,6 +69,7 @@ namespace Undaunted
 			exitslist.data[i].y = exitpos.y;
 			exitslist.data[i].z = exitpos.z;
 		}
+		/*
 		NiPoint3 bbp = Rotate(pivot, NiPoint3(boundingbox.position.x, boundingbox.position.y,0), angle);
 		boundingbox.position.x = bbp.x;
 		boundingbox.position.y = bbp.y;
@@ -78,7 +79,7 @@ namespace Undaunted
 			int temp = boundingbox.height;
 			boundingbox.height = boundingbox.width;
 			boundingbox.width = temp;
-		}
+		}*/
 		for (int i = 0; i < navlist.length; i++)
 		{
 			NiPoint3 exitpos = NiPoint3(navlist.data[i].x, navlist.data[i].y, navlist.data[i].z);
