@@ -143,30 +143,30 @@ namespace Undaunted {
 			//Some regions are dodgy
 			if (!badRegion)
 			{
-				_MESSAGE("processing worldSpace %08X", i);
+				//_MESSAGE("processing worldSpace %08X", i);
 				TESRegion* test = (TESRegion*)handler->regionList->GetNthItem(i);
 				if (test != NULL)
 				{
 					if (test->worldSpace == NULL)
 					{
-						_MESSAGE("worldSpace %08X is null", i);
+						//_MESSAGE("worldSpace %08X is null", i);
 					}
 					else
 					{
-						_MESSAGE("worldSpace %08X is not null", i);
-						_MESSAGE("processing worldSpace %p", test->worldSpace);
+						//_MESSAGE("worldSpace %08X is not null", i);
+						//_MESSAGE("processing worldSpace %p", test->worldSpace);
 						//Yeah. So some regions are really low in the memory stack?
 						//They blow up if you try and use them so we filter out worldspace pointers below 000000000002433E
 						if ((uintptr_t)test->worldSpace <= 148286)
 						{
-							_MESSAGE("Low Level Region, Ignoring.");
+							//_MESSAGE("Low Level Region, Ignoring.");
 						}
 						else
 						{
 							TESObjectCELL* cell = test->worldSpace->unk088;
 							if (cell != NULL)
 							{
-								_MESSAGE("unk088 is not null for worldspace %08x", i);
+								//_MESSAGE("unk088 is not null for worldspace %08x", i);
 								int numberofRefs = papyrusCell::GetNumRefs(cell, 0);
 								if (numberofRefs > 0)
 								{
@@ -192,14 +192,14 @@ namespace Undaunted {
 							}
 							else
 							{
-								_MESSAGE("unk088 is null for worldspace %08x", i);
+								//_MESSAGE("unk088 is null for worldspace %08x", i);
 							}
 						}
 					}
 				}
 				else
 				{
-					_MESSAGE("RegionList %08X is null", i);
+					//_MESSAGE("RegionList %08X is null", i);
 				}
 			}
 		}
