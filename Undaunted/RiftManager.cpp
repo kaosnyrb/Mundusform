@@ -140,6 +140,35 @@ namespace Undaunted {
 	BoundingBoxList boundingboxes = BoundingBoxList();
 	FormRefList formlist = FormRefList();
 
+	void RenderBoundingBox(BoundingBox box)
+	{
+		FormRef ref = FormRef();
+		ref.formId = 352102;//
+		ref.pos.x = box.position.x;
+		ref.pos.y = box.position.y;
+		ref.pos.z = 0;
+		ref.scale = 400;
+		formlist.AddItem(ref);
+
+		ref.pos.x = box.position.x + box.width;
+		ref.pos.y = box.position.y;
+		ref.pos.z = 0;
+		ref.scale = 400;
+		formlist.AddItem(ref);
+
+		ref.pos.x = box.position.x;
+		ref.pos.y = box.position.y + box.height;
+		ref.pos.z = 0;
+		ref.scale = 400;
+		formlist.AddItem(ref);
+
+		ref.pos.x = box.position.x + box.width;
+		ref.pos.y = box.position.y + box.height;
+		ref.pos.z = 0;
+		ref.scale = 400;
+		formlist.AddItem(ref);
+	}
+
 	int Work()
 	{
 		//Debug
@@ -167,31 +196,7 @@ namespace Undaunted {
 		boundingboxes.AddItem(Enteranceblock.boundingbox);
 		if (showboundingbox == 1)
 		{
-			FormRef ref = FormRef();
-			ref.formId = 352102;//
-			ref.pos.x = Enteranceblock.boundingbox.position.x;
-			ref.pos.y = Enteranceblock.boundingbox.position.y;
-			ref.pos.z = 0;
-			ref.scale = 400;
-			formlist.AddItem(ref);
-
-			ref.pos.x = Enteranceblock.boundingbox.position.x + Enteranceblock.boundingbox.width;
-			ref.pos.y = Enteranceblock.boundingbox.position.y;
-			ref.pos.z = 0;
-			ref.scale = 400;
-			formlist.AddItem(ref);
-
-			ref.pos.x = Enteranceblock.boundingbox.position.x;
-			ref.pos.y = Enteranceblock.boundingbox.position.y + Enteranceblock.boundingbox.height;
-			ref.pos.z = 0;
-			ref.scale = 400;
-			formlist.AddItem(ref);
-
-			ref.pos.x = Enteranceblock.boundingbox.position.x + Enteranceblock.boundingbox.width;
-			ref.pos.y = Enteranceblock.boundingbox.position.y + Enteranceblock.boundingbox.height;
-			ref.pos.z = 0;
-			ref.scale = 400;
-			formlist.AddItem(ref);
+			RenderBoundingBox(Enteranceblock.boundingbox);
 		}
 
 		_MESSAGE("Update the navmesh");
@@ -279,31 +284,7 @@ namespace Undaunted {
 			boundingboxes.AddItem(box);
 			if (showboundingbox == 1)
 			{
-				FormRef ref = FormRef();
-				ref.formId = 352102;//Torch
-				ref.pos.x = box.position.x;
-				ref.pos.y = box.position.y;
-				ref.pos.z = exit.z;
-				ref.scale = 400;
-				formlist.AddItem(ref);
-
-				ref.pos.x = box.position.x + box.width;
-				ref.pos.y = box.position.y;
-				ref.pos.z = exit.z;
-				ref.scale = 400;
-				formlist.AddItem(ref);
-
-				ref.pos.x = box.position.x;
-				ref.pos.y = box.position.y + box.height;
-				ref.pos.z = exit.z;
-				ref.scale = 400;
-				formlist.AddItem(ref);
-
-				ref.pos.x = box.position.x + box.width;
-				ref.pos.y = box.position.y + box.height;
-				ref.pos.z = exit.z;
-				ref.scale = 400;
-				formlist.AddItem(ref);
+				RenderBoundingBox(box);
 			}
 
 			_MESSAGE("Place the block");
@@ -406,31 +387,7 @@ namespace Undaunted {
 				boundingboxes.AddItem(box);
 				if (showboundingbox == 1)
 				{
-					FormRef ref = FormRef();
-					ref.formId = 352102;//Torch
-					ref.pos.x = box.position.x;
-					ref.pos.y = box.position.y;
-					ref.pos.z = exit.z;
-					ref.scale = 400;
-					formlist.AddItem(ref);
-
-					ref.pos.x = box.position.x + box.width;
-					ref.pos.y = box.position.y;
-					ref.pos.z = exit.z;
-					ref.scale = 400;
-					formlist.AddItem(ref);
-
-					ref.pos.x = box.position.x;
-					ref.pos.y = box.position.y + box.height;
-					ref.pos.z = exit.z;
-					ref.scale = 400;
-					formlist.AddItem(ref);
-
-					ref.pos.x = box.position.x + box.width;
-					ref.pos.y = box.position.y + box.height;
-					ref.pos.z = exit.z;
-					ref.scale = 400;
-					formlist.AddItem(ref);
+					RenderBoundingBox(box);
 				}
 			}
 		}
