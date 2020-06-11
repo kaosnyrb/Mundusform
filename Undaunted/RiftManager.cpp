@@ -146,6 +146,14 @@ namespace Undaunted {
 		srand(time(NULL));
 		std::queue <Tile> exits;
 		std::queue <Tile> sideexits;
+		int roomcount = GetConfigValueInt("RiftGenerationRooms");
+		int hallcount = GetConfigValueInt("RiftGenerationHallLength");
+
+		int roomBreaker = GetConfigValueInt("RiftGenerationRoomAttempts");
+		int finalBreaker = GetConfigValueInt("RiftGenerationBreaker");
+
+		int showboundingbox = GetConfigValueInt("ShowBoundingBox");
+
 
 		_MESSAGE("Place the enterance.");
 		bool foundenterance = false;
@@ -157,6 +165,34 @@ namespace Undaunted {
 			formlist.AddItem(ref);
 		}
 		boundingboxes.AddItem(Enteranceblock.boundingbox);
+		if (showboundingbox == 1)
+		{
+			FormRef ref = FormRef();
+			ref.formId = 352102;//
+			ref.pos.x = Enteranceblock.boundingbox.position.x;
+			ref.pos.y = Enteranceblock.boundingbox.position.y;
+			ref.pos.z = 0;
+			ref.scale = 400;
+			formlist.AddItem(ref);
+
+			ref.pos.x = Enteranceblock.boundingbox.position.x + Enteranceblock.boundingbox.width;
+			ref.pos.y = Enteranceblock.boundingbox.position.y;
+			ref.pos.z = 0;
+			ref.scale = 400;
+			formlist.AddItem(ref);
+
+			ref.pos.x = Enteranceblock.boundingbox.position.x;
+			ref.pos.y = Enteranceblock.boundingbox.position.y + Enteranceblock.boundingbox.height;
+			ref.pos.z = 0;
+			ref.scale = 400;
+			formlist.AddItem(ref);
+
+			ref.pos.x = Enteranceblock.boundingbox.position.x + Enteranceblock.boundingbox.width;
+			ref.pos.y = Enteranceblock.boundingbox.position.y + Enteranceblock.boundingbox.height;
+			ref.pos.z = 0;
+			ref.scale = 400;
+			formlist.AddItem(ref);
+		}
 
 		_MESSAGE("Update the navmesh");
 		for (int i = 0; i < Enteranceblock.navlist.length; i++)
@@ -169,11 +205,7 @@ namespace Undaunted {
 		}
 
 		_MESSAGE("While we have exits open");
-		int roomcount = GetConfigValueInt("RiftGenerationRooms");
-		int hallcount = GetConfigValueInt("RiftGenerationHallLength");
 
-		int roomBreaker = GetConfigValueInt("RiftGenerationRoomAttempts");
-		int finalBreaker = GetConfigValueInt("RiftGenerationBreaker");
 
 		int placedRooms = 0;
 		int currentHallCount = hallcount;
@@ -245,6 +277,34 @@ namespace Undaunted {
 				currentHallCount = hallcount;
 			}
 			boundingboxes.AddItem(box);
+			if (showboundingbox == 1)
+			{
+				FormRef ref = FormRef();
+				ref.formId = 352102;//Torch
+				ref.pos.x = box.position.x;
+				ref.pos.y = box.position.y;
+				ref.pos.z = exit.z;
+				ref.scale = 400;
+				formlist.AddItem(ref);
+
+				ref.pos.x = box.position.x + box.width;
+				ref.pos.y = box.position.y;
+				ref.pos.z = exit.z;
+				ref.scale = 400;
+				formlist.AddItem(ref);
+
+				ref.pos.x = box.position.x;
+				ref.pos.y = box.position.y + box.height;
+				ref.pos.z = exit.z;
+				ref.scale = 400;
+				formlist.AddItem(ref);
+
+				ref.pos.x = box.position.x + box.width;
+				ref.pos.y = box.position.y + box.height;
+				ref.pos.z = exit.z;
+				ref.scale = 400;
+				formlist.AddItem(ref);
+			}
 
 			_MESSAGE("Place the block");
 			for (int i = 0; i < selectedblock.reflist.length; i++)
@@ -344,6 +404,34 @@ namespace Undaunted {
 					MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
 				}
 				boundingboxes.AddItem(box);
+				if (showboundingbox == 1)
+				{
+					FormRef ref = FormRef();
+					ref.formId = 352102;//Torch
+					ref.pos.x = box.position.x;
+					ref.pos.y = box.position.y;
+					ref.pos.z = exit.z;
+					ref.scale = 400;
+					formlist.AddItem(ref);
+
+					ref.pos.x = box.position.x + box.width;
+					ref.pos.y = box.position.y;
+					ref.pos.z = exit.z;
+					ref.scale = 400;
+					formlist.AddItem(ref);
+
+					ref.pos.x = box.position.x;
+					ref.pos.y = box.position.y + box.height;
+					ref.pos.z = exit.z;
+					ref.scale = 400;
+					formlist.AddItem(ref);
+
+					ref.pos.x = box.position.x + box.width;
+					ref.pos.y = box.position.y + box.height;
+					ref.pos.z = exit.z;
+					ref.scale = 400;
+					formlist.AddItem(ref);
+				}
 			}
 		}
 		return 1;
