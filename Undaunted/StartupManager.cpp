@@ -118,7 +118,7 @@ namespace Undaunted {
 				double bounding_xpos = data[1][0].as<double>();
 				double bounding_ypos = data[1][1].as<double>();
 				double bounding_width = data[1][2].as<double>();
-				double bounding_height = data[1][2].as<double>();
+				double bounding_height = data[1][3].as<double>();
 
 
 				//Enterance

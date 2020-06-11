@@ -29,13 +29,13 @@ namespace Undaunted
 
 	NiPoint3 Rotate(Vector3 pivot, NiPoint3 p, float angle)
 	{
-		_MESSAGE("Degree angle: %f", angle);
+		//_MESSAGE("Degree angle: %f", angle);
 		angle = angle * (3.141592653589793238463 / 180.0);
 		float s = sin(angle);
 		float c = cos(angle);
 
-		_MESSAGE("Rad angle: %f", angle);
-		_MESSAGE("before p x/y: %f %f", p.x, p.y);
+		//_MESSAGE("Rad angle: %f", angle);
+		//_MESSAGE("before p x/y: %f %f", p.x, p.y);
 
 		// translate point back to origin:
 		p.x -= pivot.x;
@@ -49,7 +49,7 @@ namespace Undaunted
 		p.x = xnew + pivot.x;
 		p.y = ynew + pivot.y;
 
-		_MESSAGE("after p x/y: %f %f", p.x, p.y);
+		//_MESSAGE("after p x/y: %f %f", p.x, p.y);
 
 		return p;
 	}
@@ -69,17 +69,15 @@ namespace Undaunted
 			exitslist.data[i].y = exitpos.y;
 			exitslist.data[i].z = exitpos.z;
 		}
-		/*
-		NiPoint3 bbp = Rotate(pivot, NiPoint3(boundingbox.position.x, boundingbox.position.y,0), angle);
+		
+		NiPoint3 bbp = Rotate(pivot, NiPoint3(boundingbox.position.x, boundingbox.position.y,0),angle);
 		boundingbox.position.x = bbp.x;
 		boundingbox.position.y = bbp.y;
-		//Flip the width/height -- feel like this could be improved
-		if (angle == 90 || angle == -90)
-		{
-			int temp = boundingbox.height;
-			boundingbox.height = boundingbox.width;
-			boundingbox.width = temp;
-		}*/
+
+		NiPoint3 bbwh = Rotate(pivot, NiPoint3(boundingbox.width, boundingbox.height, 0),angle);
+		boundingbox.width = bbwh.x;
+		boundingbox.height = bbwh.y;
+
 		for (int i = 0; i < navlist.length; i++)
 		{
 			NiPoint3 exitpos = NiPoint3(navlist.data[i].x, navlist.data[i].y, navlist.data[i].z);

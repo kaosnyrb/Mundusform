@@ -138,20 +138,19 @@ namespace Undaunted {
 	VMResultArray<float> RiftManagerRotations;
 	RefList riftmanobjectrefs = RefList();
 	BoundingBoxList boundingboxes = BoundingBoxList();
+	FormRefList formlist = FormRefList();
 
-	void BuildRift(VMClassRegistry* registry, TESObjectREFR* Target, TESObjectCELL* cell, TESWorldSpace* worldspace)
+	int Work()
 	{
 		//Debug
 		srand(time(NULL));
-		NiPoint3 startingpoint = Target->pos;
 		std::queue <Tile> exits;
 		std::queue <Tile> sideexits;
 
-		FormRefList formlist = FormRefList();
 		_MESSAGE("Place the enterance.");
 		bool foundenterance = false;
-		Block Enteranceblock = FindBlockWithJoin("Entrance","Entrance");
-		
+		Block Enteranceblock = FindBlockWithJoin("Entrance", "Entrance");
+
 		for (int i = 0; i < Enteranceblock.reflist.length; i++)
 		{
 			FormRef ref = Enteranceblock.reflist.data[i];
@@ -178,6 +177,7 @@ namespace Undaunted {
 
 		int placedRooms = 0;
 		int currentHallCount = hallcount;
+
 		//While there are still exits and we haven't reached the cap
 		while (exits.size() > 0 && placedRooms < roomcount)
 		{
@@ -191,6 +191,8 @@ namespace Undaunted {
 			bool validbox = false;
 			BoundingBox box;
 			int Breaker = 0;
+			int currentturncount = 0;
+			int currentbearing = 0;
 
 			bool isHall = false;
 			while (!validbox)
@@ -221,16 +223,16 @@ namespace Undaunted {
 
 					}
 				}
-				if (Breaker > roomBreaker)
+				if (Breaker > roomBreaker && !validbox)
 				{
 					_MESSAGE("Breaker 1 Activated. Trying to place hall.");
 					//Can't place a room? Try a hall.
 					currentHallCount = 1;
 				}
-				if (Breaker > finalBreaker)
+				if (Breaker > finalBreaker && !validbox)
 				{
 					_MESSAGE("Breaker 2 Activated. Stopping generation.");
-					return;
+					return 0;
 				}
 			}
 			if (isHall)
@@ -270,6 +272,11 @@ namespace Undaunted {
 				exitnumber = rand() % (newexits.length - 1); //0
 				_MESSAGE("exitnumber: %i", exitnumber);
 			}
+			if (currentbearing != newexits.data[exitnumber].bearing)
+			{
+				currentturncount++;
+				currentbearing = newexits.data[exitnumber].bearing;
+			}
 			exits.push(newexits.data[exitnumber]);
 			//Add the remainders to the side paths
 			for (int i = 0; i < newexits.length; i++)
@@ -283,11 +290,11 @@ namespace Undaunted {
 			for (int i = 0; i < selectedblock.navlist.length; i++)
 			{
 				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
-			}			
+			}
 		}
 		//Place the final room
 		_MESSAGE("Place the final room");
-		
+
 		Tile exit = exits.front();
 		exits.pop();
 		Block Exitblock = FindDeadend(exit.exittype.c_str(), "exit");
@@ -301,18 +308,18 @@ namespace Undaunted {
 			formlist.AddItem(ref);
 		}
 		boundingboxes.AddItem(Exitblock.boundingbox);
-		
+
 		for (int i = 0; i < Exitblock.navlist.length; i++)
 		{
 			MarkTile(Exitblock.navlist.data[i].x + exit.x, Exitblock.navlist.data[i].y + exit.y, Exitblock.navlist.data[i].z + exit.z, Exitblock.navlist.data[i].quadsize);
 		}
-		
+
 		//Close the remaining exits
 		while (sideexits.size() > 0)
 		{
 			bool validbox = false;
 			Tile exit = sideexits.front();
-			Block selectedblock = FindDeadend(exit.exittype.c_str(),"end");
+			Block selectedblock = FindDeadend(exit.exittype.c_str(), "end");
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 			BoundingBox box;
 			box = selectedblock.boundingbox;
@@ -339,7 +346,29 @@ namespace Undaunted {
 				boundingboxes.AddItem(box);
 			}
 		}
+		return 1;
+	}
 
+	void BuildRift(VMClassRegistry* registry, TESObjectREFR* Target, TESObjectCELL* cell, TESWorldSpace* worldspace)
+	{
+		riftmanobjectrefs = RefList();
+		boundingboxes = BoundingBoxList();
+		formlist = FormRefList();
+
+		int attemptcount = GetConfigValueInt("RiftGenerationTotalAttempts");
+		int currentattempts = 0;
+
+		int buildstatus = Work();
+		while (buildstatus == 0 && currentattempts < attemptcount)
+		{
+			riftmanobjectrefs = RefList();
+			boundingboxes = BoundingBoxList();
+			formlist = FormRefList();
+			currentattempts++;
+			buildstatus = Work();
+		}
+
+		NiPoint3 startingpoint = Target->pos;
 		RiftManagerRotations = VMResultArray<float>();
 		for (int i = 0; i < formlist.length; i++)
 		{
@@ -368,6 +397,7 @@ namespace Undaunted {
 			RiftManagerRotations.push_back(rotation.y);
 			RiftManagerRotations.push_back(rotation.z);
 		}
+		
 	}
 
 	VMResultArray<float> GetRiftManagerRotations()

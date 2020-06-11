@@ -32,7 +32,7 @@ namespace Undaunted {
 				currentlist->data[i].position.x + currentlist->data[i].width > item.position.x &&
 				currentlist->data[i].position.y < item.position.y + item.height &&
 				currentlist->data[i].position.y + currentlist->data[i].height > item.position.y) {
-				_MESSAGE("Collision!: %f,%f : %f,%f", currentlist->data[i].position.x, currentlist->data[i].position.y, item.position.x, item.position.y);
+				_MESSAGE("Collision!: %f,%f,%f,%f : %f,%f,%f,%f", currentlist->data[i].position.x, currentlist->data[i].position.y, currentlist->data[i].width, currentlist->data[i].height, item.position.x, item.position.y, item.width, item.height);
 				intersects = true;
 			}
 			else
