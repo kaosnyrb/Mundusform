@@ -54,6 +54,29 @@ namespace Undaunted
 		return p;
 	}
 
+	BoundingBox RotateBoundingBox(Vector3 pivot, BoundingBox box, float angle)
+	{
+		NiPoint3 bbp = Rotate(pivot, NiPoint3(box.position.x, box.position.y, 0), -angle);
+		box.position.x = bbp.x;
+		box.position.y = bbp.y;
+
+		NiPoint3 bbwh = Rotate(pivot, NiPoint3(box.width, box.height, 0), -angle);
+		box.width = bbwh.x;
+		box.height = bbwh.y;
+
+		if (box.width < 0)
+		{
+			box.position.x += box.width;
+			box.width = -box.width;
+		}
+		if (box.height < 0)
+		{
+			box.position.y += box.height;
+			box.height = -box.height;
+		}
+		return box;
+	}
+
 	void Block::RotateAroundPivot(Vector3 pivot, float angle)
 	{
 		for (int i = 0; i < reflist.length; i++)
@@ -69,14 +92,9 @@ namespace Undaunted
 			exitslist.data[i].y = exitpos.y;
 			exitslist.data[i].z = exitpos.z;
 		}
-		NiPoint3 bbp = Rotate(pivot, NiPoint3(boundingbox.position.x, boundingbox.position.y,0), -angle);
-		boundingbox.position.x = bbp.x;
-		boundingbox.position.y = bbp.y;
 
-		NiPoint3 bbwh = Rotate(pivot, NiPoint3(boundingbox.width, boundingbox.height, 0), -angle);
-		boundingbox.width = bbwh.x;
-		boundingbox.height = bbwh.y;
-		
+		boundingbox = RotateBoundingBox(pivot, boundingbox, angle);
+
 		for (int i = 0; i < navlist.length; i++)
 		{
 			NiPoint3 exitpos = NiPoint3(navlist.data[i].x, navlist.data[i].y, navlist.data[i].z);

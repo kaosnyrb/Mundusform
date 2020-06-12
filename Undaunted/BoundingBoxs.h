@@ -8,7 +8,7 @@ namespace Undaunted
 		Vector2 position;
 		float width;
 		float height;
-		BoundingBox(Vector2 _pos, float _width, float _height)
+		BoundingBox(Vector2 _pos,  float _width, float _height)
 		{
 			position = _pos;
 			width = _width;
