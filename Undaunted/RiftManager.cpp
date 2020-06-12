@@ -307,7 +307,7 @@ namespace Undaunted {
 			Block selectedblock = FindDeadend(exit.exittype.c_str(), "end");
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 			selectedblock = TranslateBlock(selectedblock, exit);
-			validbox = !boundingboxes.Intersects(selectedblock.boundingbox);
+			validbox = BlockFitsExit(selectedblock, exit);
 			if (validbox)
 			{
 				sideexits.pop();
