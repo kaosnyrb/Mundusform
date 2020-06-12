@@ -28,16 +28,23 @@ namespace Undaunted {
 		bool intersects = false;
 		for (int i = 0; i < currentlist->length; i++)
 		{
-			if (currentlist->data[i].position.x < item.position.x + item.width &&
-				currentlist->data[i].position.x + currentlist->data[i].width > item.position.x &&
-				currentlist->data[i].position.y < item.position.y + item.height &&
-				currentlist->data[i].position.y + currentlist->data[i].height > item.position.y) {
+			BoundingBox box1 = item;
+			BoundingBox box2 = currentlist->data[i];
+			// collision x-axis?
+			bool collisionX = box1.position.x + box1.width > box2.position.x &&
+				box2.position.x + box2.width > box1.position.x;
+			// collision y-axis?
+			bool collisionY = box1.position.y + box1.height > box2.position.y &&
+				box2.position.y + box2.height > box1.position.y;
+
+			if (collisionX && collisionY)
+			{
 				_MESSAGE("Collision!: %f,%f,%f,%f : %f,%f,%f,%f", currentlist->data[i].position.x, currentlist->data[i].position.y, currentlist->data[i].width, currentlist->data[i].height, item.position.x, item.position.y, item.width, item.height);
 				intersects = true;
 			}
 			else
 			{
-				_MESSAGE("No Collision: %f,%f : %f,%f", currentlist->data[i].position.x, currentlist->data[i].position.y, item.position.x, item.position.y);
+				_MESSAGE("No Collision: %f,%f,%f,%f : %f,%f,%f,%f", currentlist->data[i].position.x, currentlist->data[i].position.y, currentlist->data[i].width, currentlist->data[i].height, item.position.x, item.position.y, item.width, item.height);
 			}
 		}
 

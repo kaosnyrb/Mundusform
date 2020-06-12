@@ -69,15 +69,14 @@ namespace Undaunted
 			exitslist.data[i].y = exitpos.y;
 			exitslist.data[i].z = exitpos.z;
 		}
-		
-		NiPoint3 bbp = Rotate(pivot, NiPoint3(boundingbox.position.x, boundingbox.position.y,0),-angle);
+		NiPoint3 bbp = Rotate(pivot, NiPoint3(boundingbox.position.x, boundingbox.position.y,0), -angle);
 		boundingbox.position.x = bbp.x;
 		boundingbox.position.y = bbp.y;
 
-		NiPoint3 bbwh = Rotate(pivot, NiPoint3(boundingbox.width, boundingbox.height, 0),-angle);
+		NiPoint3 bbwh = Rotate(pivot, NiPoint3(boundingbox.width, boundingbox.height, 0), -angle);
 		boundingbox.width = bbwh.x;
 		boundingbox.height = bbwh.y;
-
+		
 		for (int i = 0; i < navlist.length; i++)
 		{
 			NiPoint3 exitpos = NiPoint3(navlist.data[i].x, navlist.data[i].y, navlist.data[i].z);

@@ -5,17 +5,6 @@
 
 namespace Undaunted {
 	BlockLibary Libary;
-	void SetBlockLibary(BlockLibary lib)
-	{
-		Libary = lib;
-		_MESSAGE("BlockLibary is set with %i entries", Libary.length);
-		//Shuffle the Libary
-		srand(time(NULL));
-		for (int i = 0; i < Libary.length + 10; i++)
-		{
-			Libary.SwapItem(rand() % Libary.length, rand() % Libary.length);
-		}
-	}
 	int BlockDeckPosition = 0;
 
 	void ShuffleDeck()
@@ -28,6 +17,12 @@ namespace Undaunted {
 		_MESSAGE("Shuffle BlockLib");
 	}
 
+	void SetBlockLibary(BlockLibary lib)
+	{
+		Libary = lib;
+		_MESSAGE("BlockLibary is set with %i entries", Libary.length);
+		ShuffleDeck();
+	}
 	
 	Block FindBlockWithJoin(const char* ConectorType, const char* blocktype)
 	{
@@ -172,7 +167,9 @@ namespace Undaunted {
 	int Work()
 	{
 		//Debug
+		//srand(1337);//Can set a fixed seed using this.
 		srand(time(NULL));
+		ShuffleDeck();
 		std::queue <Tile> exits;
 		std::queue <Tile> sideexits;
 		int roomcount = GetConfigValueInt("RiftGenerationRooms");
@@ -216,7 +213,7 @@ namespace Undaunted {
 		int currentHallCount = hallcount;
 
 		//While there are still exits and we haven't reached the cap
-		while (exits.size() > 0 && placedRooms < roomcount)
+		while (exits.size() > 0 && (placedRooms <= roomcount || currentHallCount > 0))
 		{
 			Tile exit = exits.front();
 			exits.pop();
@@ -245,17 +242,18 @@ namespace Undaunted {
 				{
 					selectedblock = FindBlockWithJoin(exit.exittype.c_str(), "room");
 				}
+				selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 				box = selectedblock.boundingbox;
 				box.position.x += exit.x;
 				box.position.y += exit.y;
-				selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
 				validbox = !boundingboxes.Intersects(box);
 				_MESSAGE("block validbox: %i", validbox);
 				if (validbox)
 				{
 					for (int i = 0; i < selectedblock.exitslist.length && validbox; i++)
 					{
-						validbox = !boundingboxes.Intersects(BoundingBox(Vector2(selectedblock.exitslist.data[i].x + exit.x - 128, selectedblock.exitslist.data[i].y + exit.y - 128), 256, 256));
+						BoundingBox exitbox = BoundingBox(Vector2(selectedblock.exitslist.data[i].x + exit.x - 128, selectedblock.exitslist.data[i].y + exit.y - 128), 256, 256);
+						validbox = !boundingboxes.Intersects(exitbox);
 						_MESSAGE("exitslist validbox: %i", validbox);
 
 					}
@@ -281,11 +279,12 @@ namespace Undaunted {
 				placedRooms++;
 				currentHallCount = hallcount;
 			}
-			boundingboxes.AddItem(box);
 			if (showboundingbox == 1)
 			{
 				RenderBoundingBox(box);
 			}
+			boundingboxes.AddItem(box);
+
 
 			_MESSAGE("Place the block");
 			for (int i = 0; i < selectedblock.reflist.length; i++)
@@ -370,7 +369,7 @@ namespace Undaunted {
 			if (validbox)
 			{
 				sideexits.pop();
-				_MESSAGE("Place the block");
+				_MESSAGE("Place the sideexits");
 				for (int i = 0; i < selectedblock.reflist.length; i++)
 				{
 					FormRef ref = selectedblock.reflist.data[i];
