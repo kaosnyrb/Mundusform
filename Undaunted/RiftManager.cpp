@@ -102,34 +102,6 @@ namespace Undaunted {
 		}
 	}
 
-	std::queue<Tile> RemoveOrAddExitFromQueue(std::queue<Tile> que, Tile exit)
-	{
-		std::queue <Tile> exits;
-		bool foundexit = false;
-
-		while (que.size() > 0)
-		{
-			Tile oldexit = que.front();
-			que.pop();
-			if (oldexit.x == exit.x &&
-				oldexit.y == exit.y &&
-				oldexit.z == exit.z)
-			{
-				//This exit already existed, this means we should join these up.
-				foundexit = true;
-			}
-			else
-			{
-				exits.push(oldexit);
-			}
-		}
-		if (!foundexit)
-		{
-			exits.push(exit);
-		}
-		return exits;
-	}
-
 	VMResultArray<float> RiftManagerRotations;
 	RefList riftmanobjectrefs = RefList();
 	BoundingBoxList boundingboxes = BoundingBoxList();
@@ -164,70 +136,103 @@ namespace Undaunted {
 		formlist.AddItem(ref);
 	}
 
+	bool BlockFitsExit(Block block, Tile exit)
+	{
+		bool validbox = !boundingboxes.Intersects(block.boundingbox);
+		_MESSAGE("block validbox: %i", validbox);
+		if (validbox)
+		{
+			for (int i = 0; i < block.exitslist.length && validbox; i++)
+			{
+				BoundingBox exitbox = BoundingBox(Vector2(block.exitslist.data[i].x, block.exitslist.data[i].y), 64, 64);
+				validbox = !boundingboxes.Intersects(exitbox);
+				_MESSAGE("exitslist validbox: %i", validbox);
+			}
+		}
+		return validbox;
+	}
+
+	Block TranslateBlock(Block block, Tile exit)
+	{
+		block.boundingbox.position.x += exit.x;
+		block.boundingbox.position.y += exit.y;
+		for (int i = 0; i < block.reflist.length; i++)
+		{
+			block.reflist.data[i].pos.x += exit.x;
+			block.reflist.data[i].pos.y += exit.y;
+			block.reflist.data[i].pos.z += exit.z;
+		}
+		for (int i = 0; i < block.exitslist.length; i++)
+		{
+			block.exitslist.data[i].x += exit.x;
+			block.exitslist.data[i].y += exit.y;
+			block.exitslist.data[i].z += exit.z;
+			block.exitslist.data[i].bearing += exit.bearing;
+		}
+		for (int i = 0; i < block.navlist.length; i++)
+		{
+			block.navlist.data[i].x += exit.x;
+			block.navlist.data[i].y += exit.y;
+			block.navlist.data[i].z += exit.z;
+		}
+		return block;
+	}
+
+	TileList PlaceBlock(Block block)
+	{
+		_MESSAGE("Place the block");
+		boundingboxes.AddItem(block.boundingbox);
+		for (int i = 0; i < block.reflist.length; i++)
+		{
+			formlist.AddItem(block.reflist.data[i]);
+		}
+		_MESSAGE("Update the navmesh");
+		for (int i = 0; i < block.navlist.length; i++)
+		{
+			MarkTile(block.navlist.data[i].x, block.navlist.data[i].y, block.navlist.data[i].z, block.navlist.data[i].quadsize);
+		}
+		TileList newexits = TileList();
+		for (int i = 0; i < block.exitslist.length; i++)
+		{
+			newexits.AddItem(block.exitslist.data[i]);
+		}
+		return newexits;
+	}
+
+	std::queue <Tile> exits;
+	std::queue <Tile> sideexits;
+	int roomcount;
+	int hallcount;
+	int roomBreaker;
+	int finalBreaker;
+	int showboundingbox;
+
 	int Work()
 	{
-		//Debug
 		//srand(1337);//Can set a fixed seed using this.
 		srand(time(NULL));
 		ShuffleDeck();
-		std::queue <Tile> exits;
-		std::queue <Tile> sideexits;
-		int roomcount = GetConfigValueInt("RiftGenerationRooms");
-		int hallcount = GetConfigValueInt("RiftGenerationHallLength");
-
-		int roomBreaker = GetConfigValueInt("RiftGenerationRoomAttempts");
-		int finalBreaker = GetConfigValueInt("RiftGenerationBreaker");
-
-		int showboundingbox = GetConfigValueInt("ShowBoundingBox");
-
 
 		_MESSAGE("Place the enterance.");
-		bool foundenterance = false;
-		Block Enteranceblock = FindBlockWithJoin("Entrance", "Entrance");
-
-		for (int i = 0; i < Enteranceblock.reflist.length; i++)
-		{
-			FormRef ref = Enteranceblock.reflist.data[i];
-			formlist.AddItem(ref);
-		}
-		boundingboxes.AddItem(Enteranceblock.boundingbox);
-		if (showboundingbox == 1)
-		{
-			RenderBoundingBox(Enteranceblock.boundingbox);
-		}
-
-		_MESSAGE("Update the navmesh");
-		for (int i = 0; i < Enteranceblock.navlist.length; i++)
-		{
-			MarkTile(Enteranceblock.navlist.data[i].x, Enteranceblock.navlist.data[i].y, Enteranceblock.navlist.data[i].z, Enteranceblock.navlist.data[i].quadsize);
-		}
+		Block Enteranceblock = FindBlockWithJoin("Entrance", "Entrance");		
+		PlaceBlock(Enteranceblock);// We don't need to move the enterance, it's at 0,0,0
 		for (int i = 0; i < Enteranceblock.exitslist.length; i++)
 		{
 			exits.push(Enteranceblock.exitslist.data[i]);
 		}
-
+		if (showboundingbox == 1) RenderBoundingBox(Enteranceblock.boundingbox);
 		_MESSAGE("While we have exits open");
-
-
 		int placedRooms = 0;
 		int currentHallCount = hallcount;
-
-		//While there are still exits and we haven't reached the cap
 		while (exits.size() > 0 && (placedRooms <= roomcount || currentHallCount > 0))
 		{
+			_MESSAGE("Get the next unplaced exit on the main branch.");
 			Tile exit = exits.front();
 			exits.pop();
-			_MESSAGE("Find a unplaced the exit.");
-
-			_MESSAGE("Select a block that enterance matches the exit");
-
+			_MESSAGE("Select a block that entrance matches the exit");
 			Block selectedblock;
 			bool validbox = false;
-			BoundingBox box;
-			int Breaker = 0;
-			int currentturncount = 0;
-			int currentbearing = 0;
-
+			int Breaker = 0; // It's possible that there is no valid blocks for this generation attempt. This prevents an infinite loop.
 			bool isHall = false;
 			while (!validbox)
 			{
@@ -243,21 +248,8 @@ namespace Undaunted {
 					selectedblock = FindBlockWithJoin(exit.exittype.c_str(), "room");
 				}
 				selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
-				box = selectedblock.boundingbox;
-				box.position.x += exit.x;
-				box.position.y += exit.y;
-				validbox = !boundingboxes.Intersects(box);
-				_MESSAGE("block validbox: %i", validbox);
-				if (validbox)
-				{
-					for (int i = 0; i < selectedblock.exitslist.length && validbox; i++)
-					{
-						BoundingBox exitbox = BoundingBox(Vector2(selectedblock.exitslist.data[i].x + exit.x - 128, selectedblock.exitslist.data[i].y + exit.y - 128), 256, 256);
-						validbox = !boundingboxes.Intersects(exitbox);
-						_MESSAGE("exitslist validbox: %i", validbox);
-
-					}
-				}
+				selectedblock = TranslateBlock(selectedblock, exit);
+				validbox = BlockFitsExit(selectedblock, exit);
 				if (Breaker > roomBreaker && !validbox)
 				{
 					_MESSAGE("Breaker 1 Activated. Trying to place hall.");
@@ -270,6 +262,7 @@ namespace Undaunted {
 					return 0;
 				}
 			}
+			//We have found a block that fits.
 			if (isHall)
 			{
 				currentHallCount--;
@@ -279,43 +272,13 @@ namespace Undaunted {
 				placedRooms++;
 				currentHallCount = hallcount;
 			}
-			if (showboundingbox == 1)
-			{
-				RenderBoundingBox(box);
-			}
-			boundingboxes.AddItem(box);
-
-
-			_MESSAGE("Place the block");
-			for (int i = 0; i < selectedblock.reflist.length; i++)
-			{
-				FormRef ref = selectedblock.reflist.data[i];
-				ref.pos.x += exit.x;
-				ref.pos.y += exit.y;
-				ref.pos.z += exit.z;
-				formlist.AddItem(ref);
-			}
-			TileList newexits = TileList();
-			for (int i = 0; i < selectedblock.exitslist.length; i++)
-			{
-				Tile newexit = selectedblock.exitslist.data[i];
-				newexit.x += exit.x;
-				newexit.y += exit.y;
-				newexit.z += exit.z;
-				newexit.bearing += exit.bearing;
-				newexits.AddItem(newexit);
-			}
+			if (showboundingbox == 1) RenderBoundingBox(selectedblock.boundingbox);			
+			TileList newexits = PlaceBlock(selectedblock);
 			//Choose a main path
-			int exitnumber = 0; //This code doesn't work yet. Basically I wanted to select a random exit but it leads to the chance of having an exit which can nver be furfilled.
+			int exitnumber = 0;
 			if (newexits.length > 1)
 			{
-				exitnumber = rand() % (newexits.length - 1); //0
-				_MESSAGE("exitnumber: %i", exitnumber);
-			}
-			if (currentbearing != newexits.data[exitnumber].bearing)
-			{
-				currentturncount++;
-				currentbearing = newexits.data[exitnumber].bearing;
+				exitnumber = rand() % (newexits.length);
 			}
 			exits.push(newexits.data[exitnumber]);
 			//Add the remainders to the side paths
@@ -326,33 +289,15 @@ namespace Undaunted {
 					sideexits.push(newexits.data[i]);
 				}
 			}
-			_MESSAGE("Update the navmesh");
-			for (int i = 0; i < selectedblock.navlist.length; i++)
-			{
-				MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
-			}
 		}
 		//Place the final room
 		_MESSAGE("Place the final room");
-
 		Tile exit = exits.front();
 		exits.pop();
 		Block Exitblock = FindDeadend(exit.exittype.c_str(), "exit");
 		Exitblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
-		for (int i = 0; i < Exitblock.reflist.length; i++)
-		{
-			FormRef ref = Exitblock.reflist.data[i];
-			ref.pos.x += exit.x;
-			ref.pos.y += exit.y;
-			ref.pos.z += exit.z;
-			formlist.AddItem(ref);
-		}
-		boundingboxes.AddItem(Exitblock.boundingbox);
-
-		for (int i = 0; i < Exitblock.navlist.length; i++)
-		{
-			MarkTile(Exitblock.navlist.data[i].x + exit.x, Exitblock.navlist.data[i].y + exit.y, Exitblock.navlist.data[i].z + exit.z, Exitblock.navlist.data[i].quadsize);
-		}
+		Exitblock = TranslateBlock(Exitblock, exit);
+		TileList newexits = PlaceBlock(Exitblock);
 
 		//Close the remaining exits
 		while (sideexits.size() > 0)
@@ -361,33 +306,13 @@ namespace Undaunted {
 			Tile exit = sideexits.front();
 			Block selectedblock = FindDeadend(exit.exittype.c_str(), "end");
 			selectedblock.RotateAroundPivot(Vector3(0, 0, 0), exit.bearing);
-			BoundingBox box;
-			box = selectedblock.boundingbox;
-			box.position.x += exit.x;
-			box.position.y += exit.y;
-			validbox = !boundingboxes.Intersects(box);
+			selectedblock = TranslateBlock(selectedblock, exit);
+			validbox = !boundingboxes.Intersects(selectedblock.boundingbox);
 			if (validbox)
 			{
 				sideexits.pop();
-				_MESSAGE("Place the sideexits");
-				for (int i = 0; i < selectedblock.reflist.length; i++)
-				{
-					FormRef ref = selectedblock.reflist.data[i];
-					ref.pos.x += exit.x;
-					ref.pos.y += exit.y;
-					ref.pos.z += exit.z;
-					formlist.AddItem(ref);
-				}
-				_MESSAGE("Update the navmesh");
-				for (int i = 0; i < selectedblock.navlist.length; i++)
-				{
-					MarkTile(selectedblock.navlist.data[i].x + exit.x, selectedblock.navlist.data[i].y + exit.y, selectedblock.navlist.data[i].z + exit.z, selectedblock.navlist.data[i].quadsize);
-				}
-				boundingboxes.AddItem(box);
-				if (showboundingbox == 1)
-				{
-					RenderBoundingBox(box);
-				}
+				TileList newexits = PlaceBlock(selectedblock);
+				if (showboundingbox == 1) RenderBoundingBox(selectedblock.boundingbox);
 			}
 		}
 		return 1;
@@ -400,6 +325,12 @@ namespace Undaunted {
 		formlist = FormRefList();
 
 		int attemptcount = GetConfigValueInt("RiftGenerationTotalAttempts");
+		roomcount = GetConfigValueInt("RiftGenerationRooms");
+		hallcount = GetConfigValueInt("RiftGenerationHallLength");
+		roomBreaker = GetConfigValueInt("RiftGenerationRoomAttempts");
+		finalBreaker = GetConfigValueInt("RiftGenerationBreaker");
+		showboundingbox = GetConfigValueInt("ShowBoundingBox");
+
 		int currentattempts = 0;
 
 		int buildstatus = Work();
