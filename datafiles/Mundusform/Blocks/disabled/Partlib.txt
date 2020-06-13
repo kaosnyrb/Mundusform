@@ -9,4 +9,21 @@ cog: 583701
 
 Bust: 755613
 
-Colm Dragonborn.esm: 020FE0
+Colm Dragonborn.esm: 135136
+
+torch: 595231
+crystal 352102
+
+350465
+
+350465
+
+DwRmSm joiner: 351246
+DwRmSm doorway: 360895
+
+DwRmSmWall: 360894
+
+dwrmsm corner: 360889
+
+DweHallBgEndCapExBg01: 312680
+DweHallBg1way01: 243371
