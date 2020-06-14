@@ -31,3 +31,16 @@ DweHallRamp: 312671
 DweHallBgcap: 312679
 DweHallBgCorner: 312676
 DweHall4way: 312678
+
+
+
+SERuinsHallBg1Way01: 14391
+SERuinsHallBGDoorSecret01: 74154
+SERuinsHallBg2Way01: 14392
+
+SERuinsRmWallEx01: 19378
+SERuinsRmCorIn01: 19379
+SERuinsRmMid01: 19381
+SERuinsRmWall01: 19380
+
+SERuinsFontStatic01
