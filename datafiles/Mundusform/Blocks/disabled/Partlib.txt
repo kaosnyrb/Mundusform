@@ -27,3 +27,7 @@ dwrmsm corner: 360889
 
 DweHallBgEndCapExBg01: 312680
 DweHallBg1way01: 243371
+DweHallRamp: 312671
+DweHallBgcap: 312679
+DweHallBgCorner: 312676
+DweHall4way: 312678

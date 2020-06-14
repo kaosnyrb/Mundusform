@@ -300,8 +300,10 @@ namespace Undaunted {
 		TileList newexits = PlaceBlock(Exitblock);
 
 		//Close the remaining exits
+		int Breaker = 0;
 		while (sideexits.size() > 0)
 		{
+			Breaker++;
 			bool validbox = false;
 			Tile exit = sideexits.front();
 			Block selectedblock = FindDeadend(exit.exittype.c_str(), "end");
@@ -313,6 +315,11 @@ namespace Undaunted {
 				sideexits.pop();
 				TileList newexits = PlaceBlock(selectedblock);
 				if (showboundingbox == 1) RenderBoundingBox(selectedblock.boundingbox);
+			}
+			if (Breaker > finalBreaker && !validbox)
+			{
+				_MESSAGE("Breaker 2 Activated. Stopping generation.");
+				return 0;
 			}
 		}
 		return 1;
