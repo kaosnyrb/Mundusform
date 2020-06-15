@@ -65,6 +65,7 @@ namespace Undaunted
 	{
 		QuadSize = GetConfigValueInt("NavmeshToolResolution");
 		corriderHeight = GetConfigValueInt("NavmeshCorriderHeight");
+		currentMap = TileMap();
 	}
 
 	void ExportNavmesh()

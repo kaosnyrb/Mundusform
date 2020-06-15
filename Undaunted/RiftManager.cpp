@@ -330,6 +330,9 @@ namespace Undaunted {
 		riftmanobjectrefs = RefList();
 		boundingboxes = BoundingBoxList();
 		formlist = FormRefList();
+		exits = std::queue <Tile>();
+		sideexits = std::queue <Tile>();
+		InitNavmesh();
 
 		int attemptcount = GetConfigValueInt("RiftGenerationTotalAttempts");
 		roomcount = GetConfigValueInt("RiftGenerationRooms");
@@ -346,6 +349,9 @@ namespace Undaunted {
 			riftmanobjectrefs = RefList();
 			boundingboxes = BoundingBoxList();
 			formlist = FormRefList();
+			exits = std::queue <Tile>();
+			sideexits = std::queue <Tile>();
+			InitNavmesh();
 			currentattempts++;
 			buildstatus = Work();
 		}
