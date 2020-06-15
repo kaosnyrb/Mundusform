@@ -42,5 +42,7 @@ SERuinsRmWallEx01: 19378
 SERuinsRmCorIn01: 19379
 SERuinsRmMid01: 19381
 SERuinsRmWall01: 19380
-
-SERuinsFontStatic01
+4way: 14390
+SERuinsFontStatic01: 101314
+DLC1FalmerValleyBrazierLight: 69115
+SolitudeInteriorLightBlueLG: 839702
